@@ -54,7 +54,7 @@ Application development begins in Sprint 1.
 
 ## UX Design
 
-The app map, wireframes, screen descriptions and a link to the clickable prototype are in [UX-DESIGN.md](./UX-DESIGN.md).
+The app map, wireframes, screen descriptions and a link to the clickable prototype are in [UX-DESIGN.md](./ux-design/UX-DESIGN.md).
 
 ## Contributing
 
@@ -76,10 +76,14 @@ Build and run instructions will be added here once development starts in Sprint 
 curbcut/
 ├── front-end/       # React front end
 ├── back-end/        # Express back end
-├── ux-design/       # App map, wireframes and prototype exports
+├── ux-design/
+│   ├── UX-DESIGN.md # Design links, app map and screen descriptions
+│   ├── app-map.png
+│   ├── wireframes/ # Individual PNG files for M01–M21
+│   ├── wireframes.drawio
+│   └── prototype/
 ├── README.md
-├── CONTRIBUTING.md
-└── UX-DESIGN.md
+└── CONTRIBUTING.md
 ```
 
 The repository also contains course automation files (`.automations`, `.github`, `.githooks`), which should not be modified.
