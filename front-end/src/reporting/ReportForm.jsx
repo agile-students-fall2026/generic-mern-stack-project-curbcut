@@ -4,6 +4,7 @@ import './ReportForm.css'
 function ReportForm() {
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
+  const [observedAt] = useState(() => new Date())
 
   return (
     <main className="reporting">
@@ -15,8 +16,25 @@ function ReportForm() {
 
       <form onSubmit={(event) => event.preventDefault()}>
         <div className="reporting__field">
+          <p id="location-label" className="reporting__label">
+            Location *
+          </p>
+
+          {/* Location selection will be connected in #57. */}
+          <button
+            type="button"
+            className="reporting__input reporting__row"
+            aria-labelledby="location-label location-value"
+            disabled
+          >
+            <span id="location-value">Choose building and entrance</span>
+            <span aria-hidden="true">›</span>
+          </button>
+        </div>
+
+        <div className="reporting__field">
           <p id="category-label" className="reporting__label">
-            Category *
+            Barrier category *
           </p>
 
           <div
@@ -45,6 +63,36 @@ function ReportForm() {
         </div>
 
         <div className="reporting__field">
+          <p id="observation-label" className="reporting__label">
+            When did you see it? *
+          </p>
+
+          <div
+            className="reporting__input reporting__row"
+            role="group"
+            aria-labelledby="observation-label"
+          >
+            <time
+              className="reporting__row-value"
+              dateTime={observedAt.toISOString()}
+            >
+              {observedAt.toLocaleString([], {
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+              })}
+            </time>
+
+            {/* Observation-time editing will be connected in #59. */}
+            <button type="button" className="reporting__text-button" disabled>
+              Change
+            </button>
+          </div>
+        </div>
+
+        <div className="reporting__field">
           <label className="reporting__label" htmlFor="description">
             Description *
           </label>
@@ -63,6 +111,36 @@ function ReportForm() {
             Describe the barrier in at least 10 words.
           </p>
         </div>
+
+        <div className="reporting__field">
+          <p id="photo-label" className="reporting__label">
+            Photo (optional)
+          </p>
+
+          {/* Photo selection will be connected in #60. */}
+          <button
+            type="button"
+            className="reporting__photo-picker"
+            aria-labelledby="photo-label photo-action"
+            aria-describedby="photo-hint"
+            disabled
+          >
+            <span id="photo-action">Tap to add a photo</span>
+          </button>
+        </div>
+
+        {/* Validation and submission will be connected in #61 and #65. */}
+        <button
+          type="submit"
+          className="reporting__button reporting__button--primary reporting__submit"
+          disabled
+        >
+          Submit report
+        </button>
+
+        <p id="photo-hint" className="reporting__hint">
+          Please keep faces and personal details out of photos.
+        </p>
       </form>
     </main>
   )
