@@ -3,6 +3,7 @@ import './ReportForm.css'
 
 function ReportForm() {
   const [description, setDescription] = useState('')
+  const [category, setCategory] = useState('')
 
   return (
     <main className="reporting">
@@ -13,6 +14,36 @@ function ReportForm() {
       </p>
 
       <form onSubmit={(event) => event.preventDefault()}>
+        <div className="reporting__field">
+          <p id="category-label" className="reporting__label">
+            Category *
+          </p>
+
+          <div
+            className="reporting__categories"
+            role="group"
+            aria-labelledby="category-label"
+          >
+            {[
+              'Blocked ramp',
+              'Elevator outage',
+              'Construction',
+              'Door issue',
+              'Other',
+            ].map((option) => (
+              <button
+                key={option}
+                type="button"
+                className="reporting__button reporting__category"
+                aria-pressed={category === option}
+                onClick={() => setCategory(option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="reporting__field">
           <label className="reporting__label" htmlFor="description">
             Description *
@@ -38,13 +69,3 @@ function ReportForm() {
 }
 
 export default ReportForm
-/* 
-| `useState('')` | Starts the description as an empty string. |
-| `description` | Holds the current text. |
-| `setDescription(...)` | Updates that text in React state. |
-| `value={description}` | Makes the text area display the stored text. |
-| `onChange` | Updates state whenever the user types or deletes text. |
-| `htmlFor="description"` | Connects the label to the input with that ID. |
-| `aria-describedby` | Connects the input to its explanatory text for assistive technology. |
-| `event.preventDefault()` | Stops the form from reloading the page if submitted. Actual submission comes later. |
-*/
