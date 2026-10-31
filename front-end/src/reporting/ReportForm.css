@@ -100,7 +100,7 @@
   outline-offset: 3px;
 }
 
-.reporting__input[aria-invalid="true"] {
+.reporting__input[aria-invalid='true'] {
   border-color: var(--report-error);
 }
 
@@ -117,7 +117,7 @@
   gap: 12px;
 }
 
-.reporting__button[aria-pressed="true"] {
+.reporting__button[aria-pressed='true'] {
   background: var(--report-selected);
   box-shadow: inset 0 0 0 1px var(--report-primary);
 }
@@ -168,7 +168,7 @@
   border-radius: 999px;
 }
 
-.reporting__category[aria-pressed="true"] {
+.reporting__category[aria-pressed='true'] {
   color: #ffffff;
   background: var(--report-primary);
 }
