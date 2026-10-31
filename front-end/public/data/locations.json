@@ -1,0 +1,58 @@
+[
+  {
+    "buildingId": "kimmel-center",
+    "buildingName": "Kimmel Center",
+    "locationId": "kimmel-main",
+    "locationName": "Main entrance",
+    "locationType": "entrance"
+  },
+  {
+    "buildingId": "kimmel-center",
+    "buildingName": "Kimmel Center",
+    "locationId": "kimmel-laguardia",
+    "locationName": "LaGuardia entrance",
+    "locationType": "entrance"
+  },
+  {
+    "buildingId": "kimmel-center",
+    "buildingName": "Kimmel Center",
+    "locationId": "kimmel-west-3rd",
+    "locationName": "West 3rd entrance",
+    "locationType": "entrance"
+  },
+  {
+    "buildingId": "kimmel-center",
+    "buildingName": "Kimmel Center",
+    "locationId": "kimmel-floor-1",
+    "locationName": "Floor 1",
+    "locationType": "floor"
+  },
+  {
+    "buildingId": "kimmel-center",
+    "buildingName": "Kimmel Center",
+    "locationId": "kimmel-floor-2",
+    "locationName": "Floor 2",
+    "locationType": "floor"
+  },
+  {
+    "buildingId": "kimmel-center",
+    "buildingName": "Kimmel Center",
+    "locationId": "kimmel-floor-3",
+    "locationName": "Floor 3",
+    "locationType": "floor"
+  },
+  {
+    "buildingId": "kimmel-center",
+    "buildingName": "Kimmel Center",
+    "locationId": "kimmel-floor-4",
+    "locationName": "Floor 4",
+    "locationType": "floor"
+  },
+  {
+    "buildingId": "kimmel-center",
+    "buildingName": "Kimmel Center",
+    "locationId": "kimmel-floor-5",
+    "locationName": "Floor 5",
+    "locationType": "floor"
+  }
+]

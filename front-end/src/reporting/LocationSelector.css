@@ -1,0 +1,56 @@
+.location-selector__trigger {
+  cursor: pointer;
+  text-align: left;
+}
+
+.location-selector {
+  width: min(560px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 20px;
+  overflow-y: auto;
+  border: 1px solid var(--report-border);
+  border-radius: 12px;
+  color: var(--report-text);
+  background: var(--report-background);
+  font: inherit;
+}
+
+.location-selector::backdrop {
+  background: rgb(0 0 0 / 45%);
+}
+
+.location-selector__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.location-selector__header h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.location-selector__search-label {
+  margin-top: 20px;
+}
+
+.location-selector__list {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.location-selector__option {
+  width: 100%;
+  text-align: left;
+}
+
+.location-selector h3 {
+  margin: 24px 0 12px;
+}
+
+.location-selector h4 {
+  margin: 20px 0 8px;
+}

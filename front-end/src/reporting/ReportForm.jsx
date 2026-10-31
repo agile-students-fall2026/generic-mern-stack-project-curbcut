@@ -1,10 +1,12 @@
 import { useState } from 'react'
+import LocationSelector from './LocationSelector'
 import './ReportForm.css'
 
 function ReportForm() {
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
   const [observedAt] = useState(() => new Date())
+  const [location, setLocation] = useState(null)
 
   return (
     <main className="reporting">
@@ -20,16 +22,7 @@ function ReportForm() {
             Location *
           </p>
 
-          {/* Location selection will be connected in #57. */}
-          <button
-            type="button"
-            className="reporting__input reporting__row"
-            aria-labelledby="location-label location-value"
-            disabled
-          >
-            <span id="location-value">Choose building and entrance</span>
-            <span aria-hidden="true">›</span>
-          </button>
+          <LocationSelector location={location} onSelect={setLocation} />
         </div>
 
         <div className="reporting__field">
