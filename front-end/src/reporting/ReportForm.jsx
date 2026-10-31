@@ -38,8 +38,6 @@ function ReportForm() {
 }
 
 export default ReportForm
-
-
 /* 
 | `useState('')` | Starts the description as an empty string. |
 | `description` | Holds the current text. |
