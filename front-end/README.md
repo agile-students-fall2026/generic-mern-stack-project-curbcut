@@ -1,16 +1,42 @@
-# React + Vite
+# CurbCut Front End
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The CurbCut front end uses React, Vite, and npm.
 
-Currently, two official plugins are available:
+## Setup
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+The setup was tested with Node.js v26.4.0 and npm v11.17.0.
 
-## React Compiler
+From the repository root:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+```bash
+cd front-end
+npm ci
+npm run dev
+```
 
-## Expanding the ESLint configuration
+Open the local URL printed in the terminal. Press Ctrl+C to stop the server.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+No backend or environment variables are required to run the current starter application.
+
+## Formatting and verification
+
+Run these commands from `front-end/`:
+
+```bash
+npm run format
+npm run format:check
+npm run lint
+npm run build
+```
+
+Prettier formats files and checks formatting. ESLint checks JavaScript and JSX code. The production build is generated in `dist/`, which is excluded from version control.
+
+To preview the production build locally:
+
+```bash
+npm run preview
+```
+
+An automated application test suite has not been configured yet.
+
+See the root [README](../README.md) for project information and [CONTRIBUTING](../CONTRIBUTING.md) for the contribution workflow.

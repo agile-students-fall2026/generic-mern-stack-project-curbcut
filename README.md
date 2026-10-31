@@ -57,13 +57,14 @@ npm run dev
 
 Open the local URL printed in the terminal. Press Ctrl+C to stop the development server.
 
-To check the code and create a production build, run these from front-end/:
+To check the code and create a production build, run these from `front-end/`:
 
 ```bash
+npm run format:check
 npm run lint
 npm run build
 ```
-
+Run `npm run format` from `front-end/` to apply formatting before running these checks.
 The build output is generated in front-end/dist/ and is excluded from version control.
 
 The current front end contains the React starter application. No backend or environment variables are required to run it.
@@ -84,7 +85,7 @@ CurbCut will be a full-stack JavaScript web app built with:
 - **Express.js** on **Node.js** for the back end
 - **MongoDB** with **Mongoose** for storing buildings, entrances and reports
 
-Build and run instructions will be added here once development starts in Sprint 1.
+Front-end setup instructions are provided above. Backend setup instructions will be added when backend implementation begins.
 
 ## Repository Structure
 
