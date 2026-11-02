@@ -27,14 +27,6 @@
   color: var(--app-muted, #555b65);
 }
 
-.supported-buildings-demo {
-  margin: 24px 0 28px;
-  padding: 12px 14px;
-  border-left: 3px solid var(--app-primary, #3548a3);
-  background: var(--app-selected, #eef1ff);
-  font-size: 0.875rem;
-}
-
 .supported-buildings-back,
 .supported-buildings-retry {
   min-height: 44px;

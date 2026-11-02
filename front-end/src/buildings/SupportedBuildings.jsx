@@ -92,9 +92,6 @@ function SupportedBuildings({ getBuildingHref, onBack }) {
       <p className="supported-buildings-intro">
         Explore the buildings currently covered by CurbCut.
       </p>
-      <p className="supported-buildings-demo" role="note">
-        Demo information — not verified accessibility guidance.
-      </p>
 
       {buildingStatus === 'loading' && <p role="status">Loading buildings…</p>}
       {buildingStatus === 'error' && (
@@ -188,8 +185,8 @@ function SupportedBuildings({ getBuildingHref, onBack }) {
       )}
 
       <p className="supported-buildings-disclaimer">
-        Coverage does not ensure accessibility. Check building details and
-        recent community reports before your visit.
+        Sample data, not verified. Coverage doesn't ensure accessibility. Check
+        building details and recent reports before your visit.
       </p>
     </main>
   )
