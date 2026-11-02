@@ -83,7 +83,7 @@ Handle participation problems as follows:
 Write code that teammates can understand, verify, and maintain.
 
 - Use **Visual Studio Code**. Follow the existing code style and course JavaScript conventions.
-- Use **ESLint** for linting and **Prettier** for formatting once JavaScript components and shared configuration are added. Add the configuration and exact commands with the first application setup; these tools are not configured yet.
+- Use ESLint for JavaScript and JSX checks and Prettier for formatting. From `front-end/`, run `npm run format` before committing and `npm run format:check` and `npm run lint` before requesting review.
 - Implement the smallest working version that meets the acceptance criteria, then improve it. Avoid unnecessary complexity.
 - Use descriptive variable and function names. Remove dead or commented-out code in the area you change without expanding into unrelated cleanup.
 - Make small, focused commits with descriptive, single-line messages.
@@ -102,6 +102,7 @@ You need the following tools and access:
 - Git and access to the team's GitHub repository.
 - Visual Studio Code and its integrated terminal.
 - A UNIX-compatible shell: macOS/Linux shell, Git Bash, or WSL on Windows.
+- Node.js and npm. The front-end setup was tested with Node.js v26.4.0 and npm v11.17.0.
 
 ### Clone and configure Git
 
@@ -128,24 +129,38 @@ git config core.hooksPath .githooks
 
 ### Current application setup
 
-The project currently has placeholder `front-end/` and `back-end/` folders, each containing `readme.txt`, and no application `package.json`. Design materials live in `ux-design/`. There are no application dependency installation or run commands to execute yet.
+The React front end is in `front-end/` and uses Vite and npm.
 
-Read the [project README](./README.md) and relevant assignment instructions for project context. Documentation work can begin after cloning. When application components are implemented, update this section and the README with their exact directory paths, required runtime versions, dependency installation commands, environment configuration, and run commands. Do not assume `npm install` or `npm start` works before those components and scripts exist.
+From the repository root:
+
+```bash
+cd front-end
+npm ci
+npm run dev
+```
+
+Open the local URL printed in the terminal. Press Ctrl+C to stop the server.
+
+The current starter application does not require a backend or environment variables. Design materials are in `ux-design/`. See the [project README](./README.md) for project context.
 
 ## Building and testing
 
-Application build and test commands are **not available yet**. The repository includes course workflow automation, but it does not currently provide an application build or test suite.
+Run these commands from `front-end/` before requesting review:
 
-For documentation contributions now, preview the Markdown and verify links, paths, commands, and consistency with the current repository. Describe these checks in the pull request.
+```bash
+npm run format
+npm run format:check
+npm run lint
+npm run build
+```
 
-When the application reaches the implementation stage, the contributor adding each component must update this section with:
+All checks must finish successfully. The production build is generated in `front-end/dist/` and must not be committed.
 
-- The directory from which to run each command.
-- The exact build, test, lint, and formatting commands defined by that component.
-- Any test dependencies, environment variables, or required services, using placeholders for secrets.
-- How to run the full test suite and relevant focused tests, and how to recognize success.
+Run `npm run preview` from `front-end/` to preview the production build locally.
 
-Run the applicable checks before requesting review and before merging. Document checks that could not be run and resolve those limitations with the reviewer before merging.
+An automated application test suite has not been configured yet. Manually verify affected interactions and describe the checks in the pull request. For documentation changes, preview the Markdown and verify links, paths, and commands.
+
+Document any checks that could not be run and resolve those limitations with the reviewer before merging.
 
 ## Git workflow
 
@@ -232,7 +247,8 @@ Check your contribution before requesting review:
 
 - Create or claim an issue before starting; agree on the goal and acceptance criteria.
 - Keep changes focused. Avoid unrelated refactoring or formatting changes in the same pull request.
-- Follow existing code style and course JavaScript conventions. Use clear names, small commits, and descriptive single-line commit messages. Follow the team's formatting/linting configuration when it is added.
+- Follow existing code style and course JavaScript conventions. Use clear names, small commits, and descriptive single-line commit messages.
+- Follow the team's Prettier and ESLint configuration.
 - Verify changes before requesting review. For documentation, preview the Markdown and check commands, links, paths, and consistency with the repository. For code, test the affected behavior and run applicable configured tests, lint, and build checks once available. Report what you checked in the PR.
 - Update documentation when setup, commands, configuration, or behavior changes.
 - Never commit secrets, credentials, API keys, or `.env` files. Keep real configuration local; use documented placeholders in example configuration. Check staged changes before committing.

@@ -41,16 +41,33 @@ We do not plan to add automatic route planning although it could be a possible f
 
 ## Project Status
 
-CurbCut is currently in **Sprint 0**, which covers product definition, user experience design, project setup and sprint planning.
+CurbCut is currently in Sprint 1: front-end development. The React project has been initialized using Vite. Application screens and interactions are being implemented from the wireframes and clickable prototype.
 
-Sprint 0 work includes:
+## Front-end Setup
 
-- writing the product backlog as user stories in GitHub Issues
-- designing the app map and mobile-first wireframes
-- building a clickable prototype in Figma
-- setting up team norms, the Git workflow and the task board
+Install Node.js and npm. This setup was tested with Node.js v26.4.0 and npm v11.17.0.
 
-Application development begins in Sprint 1.
+From the repository root:
+
+```bash
+cd front-end
+npm ci
+npm run dev
+```
+
+Open the local URL printed in the terminal. Press Ctrl+C to stop the development server.
+
+To check the code and create a production build, run these from `front-end/`:
+
+```bash
+npm run format:check
+npm run lint
+npm run build
+```
+Run `npm run format` from `front-end/` to apply formatting before running these checks.
+The build output is generated in front-end/dist/ and is excluded from version control.
+
+The current front end contains the React starter application. No backend or environment variables are required to run it.
 
 ## UX Design
 
@@ -68,7 +85,7 @@ CurbCut will be a full-stack JavaScript web app built with:
 - **Express.js** on **Node.js** for the back end
 - **MongoDB** with **Mongoose** for storing buildings, entrances and reports
 
-Build and run instructions will be added here once development starts in Sprint 1.
+Front-end setup instructions are provided above. Backend setup instructions will be added when backend implementation begins.
 
 ## Repository Structure
 
