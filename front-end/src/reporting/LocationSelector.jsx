@@ -180,6 +180,10 @@ function LocationSelector({ location, onSelect }) {
                         key={item.locationId}
                         type="button"
                         className="reporting__button location-selector__option"
+                        aria-pressed={
+                          location?.buildingId === item.buildingId &&
+                          location?.locationId === item.locationId
+                        }
                         onClick={() => chooseLocation(item)}
                       >
                         {item.locationName}
@@ -198,6 +202,10 @@ function LocationSelector({ location, onSelect }) {
                         key={item.locationId}
                         type="button"
                         className="reporting__button location-selector__option"
+                        aria-pressed={
+                          location?.buildingId === item.buildingId &&
+                          location?.locationId === item.locationId
+                        }
                         onClick={() => chooseLocation(item)}
                       >
                         {item.locationName}
