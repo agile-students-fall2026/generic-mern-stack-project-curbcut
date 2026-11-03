@@ -93,7 +93,7 @@ function LocationSelector({ location, onSelect }) {
         <span id="location-value" className="reporting__row-value">
           {location
             ? `${location.buildingName} — ${location.locationName}`
-            : 'Choose building and entrance'}
+            : 'Choose building and entrance or floor'}
         </span>
         <span aria-hidden="true">›</span>
       </button>
