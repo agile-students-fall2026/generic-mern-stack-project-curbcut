@@ -1,10 +1,12 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
+import Navbar from './components/Navbar'
 import PlaceholderPage from './components/PlaceholderPage'
 
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />
       <Routes>
         {/* Home and search */}
         <Route path="/" element={<PlaceholderPage title="Home" />} />
