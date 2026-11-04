@@ -1,0 +1,73 @@
+/* The whole Search page */
+.search {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  color: var(--app-text);
+}
+
+.search__title {
+  margin: 0 0 16px;
+  font-size: 28px;
+}
+
+.search__label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* Search box with the Clear button beside it */
+.search__row {
+  display: flex;
+  gap: 8px;
+}
+
+.search__input {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  font: inherit;
+}
+
+.search__clear {
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--app-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.search__error {
+  margin-top: 16px;
+  color: var(--app-error);
+}
+
+.search__subtitle {
+  margin-top: 24px;
+  font-size: 20px;
+}
+
+/* Round button for each supported building */
+.search__chip {
+  display: inline-block;
+  margin: 0 8px 8px 0;
+  padding: 8px 14px;
+  border: 1px solid var(--app-primary);
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--app-primary);
+  text-decoration: none;
+}
+
+.search__note {
+  margin-top: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--app-muted);
+  background: var(--app-surface);
+}

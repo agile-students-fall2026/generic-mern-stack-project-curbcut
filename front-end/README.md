@@ -41,7 +41,6 @@ An automated application test suite has not been configured yet.
 
 See the root [README](../README.md) for project information and [CONTRIBUTING](../CONTRIBUTING.md) for the contribution workflow.
 
-
 ### Sprint 1 report simulation
 
 Initial sample reports load from `public/data/reports.json`.
