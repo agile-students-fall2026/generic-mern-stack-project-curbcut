@@ -6,8 +6,14 @@ import PlaceholderPage from './components/PlaceholderPage'
 
 import Home from './home/Home'
 import Search from './search/Search'
-import ReportForm from './reporting/ReportForm.jsx'
+import ReportRoute from './reporting/ReportRoute.jsx'
 import ReportsProvider from './reports/ReportsProvider.jsx'
+
+import {
+  SupportedBuildingsRoute,
+  BuildingDetailsRoute,
+  EntranceDetailsRoute,
+} from './buildings/BuildingRoutes'
 
 function App() {
   return (
@@ -16,28 +22,21 @@ function App() {
         <Navbar />
 
         <Routes>
-          {/* Home and search */}
           <Route path="/" element={<Home />} />
           <Route path="/search" element={<Search />} />
 
-          {/* Reporting */}
-          <Route path="/report" element={<ReportForm />} />
+          <Route path="/report" element={<ReportRoute />} />
 
-          {/* Buildings and entrances */}
-          <Route
-            path="/buildings"
-            element={<PlaceholderPage title="Supported buildings" />}
-          />
+          <Route path="/buildings" element={<SupportedBuildingsRoute />} />
           <Route
             path="/buildings/:buildingId"
-            element={<PlaceholderPage title="Building details" />}
+            element={<BuildingDetailsRoute />}
           />
           <Route
             path="/buildings/:buildingId/entrances/:entranceId"
-            element={<PlaceholderPage title="Entrance details" />}
+            element={<EntranceDetailsRoute />}
           />
 
-          {/* Reports and about */}
           <Route
             path="/browse"
             element={<PlaceholderPage title="Browse reports" />}
