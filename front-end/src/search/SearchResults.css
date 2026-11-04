@@ -1,0 +1,33 @@
+.results {
+  margin-top: 24px;
+}
+
+/* Buildings and Barriers tabs side by side */
+.results__tabs {
+  display: flex;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--app-divider);
+}
+
+.results__tab {
+  flex: 1;
+  padding: 12px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--app-muted);
+  cursor: pointer;
+}
+
+/* The open tab is blue with a line under it */
+.results__tab--open {
+  color: var(--app-primary);
+  border-bottom: 3px solid var(--app-primary);
+}
+
+/* Space between the cards */
+.results__list {
+  display: grid;
+  gap: 12px;
+}

@@ -1,20 +1,32 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import SearchSuggestions from './SearchSuggestions'
+import SearchResults from './SearchResults'
 import './Search.css'
 
-// The Search screen (M03, M04)
+// The Search screen (M03 to M06)
 function Search() {
   // What the user has typed in the search box
   const [search, setSearch] = useState('')
+  // Becomes true when the user presses Enter or "See all results"
+  const [showResults, setShowResults] = useState(false)
   const [buildings, setBuildings] = useState([])
+  const [locations, setLocations] = useState([])
   const [error, setError] = useState('')
 
-  // Load the list of buildings once, when the page opens
+  // Reports will come from Abdullah's shared report list in #65
+  const reports = []
+
+  // Load the buildings, and their entrances and floors, when the page opens
   useEffect(() => {
     fetch('/data/buildings.json')
       .then((response) => response.json())
       .then((data) => setBuildings(data.buildings))
+      .catch(() => setError('Buildings could not be loaded. Please refresh.'))
+
+    fetch('/data/locations.json')
+      .then((response) => response.json())
+      .then((data) => setLocations(data))
       .catch(() => setError('Buildings could not be loaded. Please refresh.'))
   }, [])
 
@@ -36,12 +48,35 @@ function Search() {
     }
   }
 
+  // Typing goes back to the suggestions
+  function typeSearch(text) {
+    setSearch(text)
+    setShowResults(false)
+  }
+
+  // Show the full results, but only if something was typed
+  function showSearchResults() {
+    if (search.trim() !== '') {
+      setShowResults(true)
+    }
+  }
+
+  // Empty the search box and go back to the start
+  function clearSearch() {
+    setSearch('')
+    setShowResults(false)
+  }
+
   return (
     <main className="search">
       <h1 className="search__title">Search</h1>
 
-      {/* Pressing Enter to search is added in #83 */}
-      <form onSubmit={(event) => event.preventDefault()}>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          showSearchResults()
+        }}
+      >
         <label className="search__label" htmlFor="search-input">
           Search buildings and barriers
         </label>
@@ -51,7 +86,7 @@ function Search() {
             id="search-input"
             className="search__input"
             value={search}
-            onChange={(event) => setSearch(event.target.value)}
+            onChange={(event) => typeSearch(event.target.value)}
             placeholder="Search by building or barrier"
           />
 
@@ -59,7 +94,7 @@ function Search() {
             <button
               type="button"
               className="search__clear"
-              onClick={() => setSearch('')}
+              onClick={clearSearch}
             >
               Clear
             </button>
@@ -91,10 +126,20 @@ function Search() {
       )}
 
       {/* While the user is typing, show matching buildings */}
-      {search !== '' && (
+      {search !== '' && !showResults && (
         <SearchSuggestions
           buildings={matchingBuildings}
-          onCancel={() => setSearch('')}
+          onSeeAll={showSearchResults}
+          onCancel={clearSearch}
+        />
+      )}
+
+      {/* After Enter or "See all results", show the full results */}
+      {search !== '' && showResults && (
+        <SearchResults
+          buildings={matchingBuildings}
+          reports={reports}
+          locations={locations}
         />
       )}
     </main>
