@@ -2,10 +2,12 @@ import { Link } from 'react-router-dom'
 import './SearchSuggestions.css'
 
 // The list shown under the search box while the user is typing (M04)
-function SearchSuggestions({ buildings, onSeeAll, onCancel }) {
+function SearchSuggestions({ buildings, reports, onSeeAll, onCancel }) {
   return (
     <div className="suggestions">
-      {buildings.length === 0 && <p>No suggestions found.</p>}
+      {buildings.length === 0 && reports.length === 0 && (
+        <p>No suggestions found.</p>
+      )}
 
       {buildings.map((building) => (
         <Link
@@ -17,7 +19,15 @@ function SearchSuggestions({ buildings, onSeeAll, onCancel }) {
         </Link>
       ))}
 
-      {/* Barrier suggestions come with the shared reports in #86 */}
+      {reports.map((report) => (
+        <Link
+          key={report.id}
+          to={`/reports/${report.id}`}
+          className="suggestions__item"
+        >
+          Barrier: {report.category}
+        </Link>
+      ))}
 
       <button type="button" className="suggestions__button" onClick={onSeeAll}>
         See all results

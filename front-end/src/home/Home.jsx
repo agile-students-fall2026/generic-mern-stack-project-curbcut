@@ -1,15 +1,26 @@
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import ReportCard from '../components/ReportCard'
+import useReports from '../reports/useReports'
+import sortNewestFirst from '../reports/sortNewestFirst'
 import './Home.css'
 
 // The first screen of the app (M01)
 function Home() {
-  // Reports will come from Abdullah's shared report list
-  // Until then there are no reports to show.
-  const reports = []
+  // Abdullah's shared list of reports (#65)
+  const { reports, loading } = useReports()
+  const [locations, setLocations] = useState([])
 
-  // Only the first 4 reports are shown on Home
-  const recentReports = reports.slice(0, 4)
+  // Load the entrances and floors once, so each card can show its location
+  useEffect(() => {
+    fetch('/data/locations.json')
+      .then((response) => response.json())
+      .then((data) => setLocations(data))
+      .catch(() => setLocations([]))
+  }, [])
+
+  // The 4 most recently updated reports
+  const recentReports = sortNewestFirst(reports).slice(0, 4)
 
   return (
     <main className="home">
@@ -37,17 +48,16 @@ function Home() {
         </Link>
       </div>
 
-      {recentReports.length === 0 && (
+      {!loading && recentReports.length === 0 && (
         <p className="home__empty">
           No reports have been posted yet. This does not mean there are no
           barriers.
         </p>
       )}
 
-      {/* Location names are added when the shared data is connected */}
       <div className="home__list">
         {recentReports.map((report) => (
-          <ReportCard key={report.id} report={report} locations={[]} />
+          <ReportCard key={report.id} report={report} locations={locations} />
         ))}
       </div>
 
