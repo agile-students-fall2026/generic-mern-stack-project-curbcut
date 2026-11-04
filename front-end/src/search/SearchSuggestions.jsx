@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 import './SearchSuggestions.css'
 
 // The list shown under the search box while the user is typing (M04)
-function SearchSuggestions({ buildings, onCancel }) {
+function SearchSuggestions({ buildings, onSeeAll, onCancel }) {
   return (
     <div className="suggestions">
       {buildings.length === 0 && <p>No suggestions found.</p>}
@@ -18,7 +18,10 @@ function SearchSuggestions({ buildings, onCancel }) {
       ))}
 
       {/* Barrier suggestions come with the shared reports in #86 */}
-      {/* The "See all results" button is added in #83 */}
+
+      <button type="button" className="suggestions__button" onClick={onSeeAll}>
+        See all results
+      </button>
 
       <button type="button" className="suggestions__cancel" onClick={onCancel}>
         Cancel
