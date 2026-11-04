@@ -1,11 +1,12 @@
 import { useState } from 'react'
 import LocationSelector from './LocationSelector'
 import './ReportForm.css'
+import ObservationTimeEditor from './ObservationTimeEditor'
 
 function ReportForm() {
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
-  const [observedAt] = useState(() => new Date())
+  const [observedAt, setObservedAt] = useState(() => new Date())
   const [location, setLocation] = useState(null)
 
   return (
@@ -79,9 +80,10 @@ function ReportForm() {
             </time>
 
             {/* Observation-time editing will be connected in #59. */}
-            <button type="button" className="reporting__text-button" disabled>
-              Change
-            </button>
+            <ObservationTimeEditor
+              observedAt={observedAt}
+              onConfirm={setObservedAt}
+            />
           </div>
         </div>
 
