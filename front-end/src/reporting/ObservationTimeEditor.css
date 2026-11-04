@@ -1,0 +1,26 @@
+.observation-time-editor {
+  width: min(480px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 20px;
+  overflow-y: auto;
+  border: 1px solid var(--report-border);
+  border-radius: 12px;
+  color: var(--report-text);
+  background: var(--report-background);
+  font: inherit;
+}
+
+.observation-time-editor::backdrop {
+  background: rgb(0 0 0 / 45%);
+}
+
+.observation-time-editor h2 {
+  margin: 0 0 20px;
+  font-size: 22px;
+}
+
+.observation-time-editor__actions {
+  justify-content: flex-end;
+  margin-top: 20px;
+}
