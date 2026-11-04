@@ -94,7 +94,7 @@ function SearchResults({ search, buildings, reports, locations, onNewSearch }) {
         </div>
       )}
 
-      {/* Newest-first order comes with the shared reports in #86 */}
+      {/* The reports already come newest first from the Search screen */}
       {tab === 'barriers' && (
         <div className="results__list">
           {reports.map((report) => (
