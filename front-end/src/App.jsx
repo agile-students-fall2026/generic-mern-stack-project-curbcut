@@ -6,6 +6,7 @@ import PlaceholderPage from './components/PlaceholderPage'
 
 import Home from './home/Home'
 import Search from './search/Search'
+import BrowseReports from './browsing/BrowseReports'
 
 import ReportRoute from './reporting/ReportRoute'
 import ReportsProvider from './reports/ReportsProvider'
@@ -40,10 +41,7 @@ function App() {
           />
 
           {/* Reports and about */}
-          <Route
-            path="/browse"
-            element={<PlaceholderPage title="Browse reports" />}
-          />
+          <Route path="/browse" element={<BrowseReports />} />
           <Route
             path="/reports/:reportId"
             element={<PlaceholderPage title="Report details" />}
