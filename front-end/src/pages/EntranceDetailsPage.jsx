@@ -23,7 +23,9 @@ function EntranceDetailsPage() {
       reports={reports}
       buildingHref={'/buildings/' + buildingId}
       getReportHref={getReportLink}
-      reportBarrierHref="/report"
+      reportBarrierHref={
+        '/report?buildingId=' + buildingId + '&entranceId=' + entranceId
+      }
     />
   )
 }

@@ -7,7 +7,7 @@ import PlaceholderPage from './components/PlaceholderPage'
 import Home from './home/Home'
 import Search from './search/Search'
 
-import ReportForm from './reporting/ReportForm'
+import ReportRoute from './reporting/ReportRoute'
 import ReportsProvider from './reports/ReportsProvider'
 
 import SupportedBuildingsPage from './pages/SupportedBuildingsPage'
@@ -26,7 +26,7 @@ function App() {
           <Route path="/search" element={<Search />} />
 
           {/* Reporting */}
-          <Route path="/report" element={<ReportForm />} />
+          <Route path="/report" element={<ReportRoute />} />
 
           {/* Buildings and entrances */}
           <Route path="/buildings" element={<SupportedBuildingsPage />} />

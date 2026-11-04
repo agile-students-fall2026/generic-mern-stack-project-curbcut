@@ -35,7 +35,7 @@ function BuildingDetailsPage() {
       getEntranceHref={getEntranceLink}
       getReportHref={getReportLink}
       browseReportsHref="/browse"
-      reportBarrierHref="/report"
+      reportBarrierHref={'/report?buildingId=' + buildingId}
       onBack={goBack}
     />
   )

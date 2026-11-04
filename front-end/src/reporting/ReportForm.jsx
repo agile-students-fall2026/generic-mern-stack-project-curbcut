@@ -7,11 +7,11 @@ import validateReport from './validateReport'
 import ReportConfirmation from './ReportConfirmation'
 import './ReportForm.css'
 
-function ReportForm() {
+function ReportForm({ initialLocation = null }) {
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
   const [observedAt, setObservedAt] = useState(() => new Date())
-  const [location, setLocation] = useState(null)
+  const [location, setLocation] = useState(initialLocation)
   const [photo, setPhoto] = useState(null)
   const [errors, setErrors] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
