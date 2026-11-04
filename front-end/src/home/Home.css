@@ -1,0 +1,72 @@
+/* The whole Home page */
+.home {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 24px 16px;
+  color: var(--app-text);
+}
+
+.home__title {
+  margin: 0 0 16px;
+  font-size: 28px;
+}
+
+.home__intro {
+  margin-bottom: 24px;
+  color: var(--app-muted);
+}
+
+/* Link that looks like a search box */
+.home__search {
+  display: block;
+  margin-bottom: 16px;
+  padding: 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 8px;
+  color: var(--app-muted);
+  text-decoration: none;
+}
+
+/* Blue Report a barrier button */
+.home__button {
+  display: block;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  color: #ffffff;
+  background: var(--app-primary);
+  text-decoration: none;
+}
+
+/* "Recently updated" on the left, "See all" on the right */
+.home__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 28px;
+}
+
+.home__subtitle {
+  font-size: 20px;
+}
+
+.home__link {
+  font-weight: 600;
+  color: var(--app-primary);
+}
+
+.home__empty {
+  margin-bottom: 24px;
+  padding: 16px;
+  border-radius: 8px;
+  color: var(--app-muted);
+  background: var(--app-surface);
+}
+
+/* Space between report cards */
+.home__list {
+  display: grid;
+  gap: 12px;
+  margin-bottom: 24px;
+}
