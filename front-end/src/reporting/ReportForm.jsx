@@ -2,12 +2,14 @@ import { useState } from 'react'
 import LocationSelector from './LocationSelector'
 import './ReportForm.css'
 import ObservationTimeEditor from './ObservationTimeEditor'
+import PhotoSelector from './PhotoSelector'
 
 function ReportForm() {
   const [description, setDescription] = useState('')
   const [category, setCategory] = useState('')
   const [observedAt, setObservedAt] = useState(() => new Date())
   const [location, setLocation] = useState(null)
+  const [photo, setPhoto] = useState(null)
 
   return (
     <main className="reporting">
@@ -107,22 +109,7 @@ function ReportForm() {
           </p>
         </div>
 
-        <div className="reporting__field">
-          <p id="photo-label" className="reporting__label">
-            Photo (optional)
-          </p>
-
-          {/* Photo selection will be connected in #60. */}
-          <button
-            type="button"
-            className="reporting__photo-picker"
-            aria-labelledby="photo-label photo-action"
-            aria-describedby="photo-hint"
-            disabled
-          >
-            <span id="photo-action">Tap to add a photo</span>
-          </button>
-        </div>
+        <PhotoSelector photo={photo} onChange={setPhoto} />
 
         {/* Validation and submission will be connected in #61 and #65. */}
         <button
