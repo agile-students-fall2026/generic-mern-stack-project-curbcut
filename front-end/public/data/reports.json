@@ -1,0 +1,15 @@
+[
+  {
+    "id": "mock-report-1",
+    "buildingId": "kimmel-center",
+    "entranceId": "kimmel-main",
+    "floorId": null,
+    "category": "Blocked ramp",
+    "description": "The main entrance ramp is blocked by several large boxes.",
+    "observedAt": "2026-11-01T15:00:00.000Z",
+    "createdAt": "2026-11-01T15:05:00.000Z",
+    "updatedAt": "2026-11-01T15:05:00.000Z",
+    "photo": null,
+    "status": "Active"
+  }
+]

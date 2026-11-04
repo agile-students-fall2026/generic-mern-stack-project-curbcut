@@ -228,3 +228,10 @@
   outline: 3px solid var(--report-primary);
   outline-offset: 3px;
 }
+
+.reporting__fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}

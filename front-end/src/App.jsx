@@ -1,7 +1,12 @@
 import ReportForm from './reporting/ReportForm.jsx'
+import ReportsProvider from './reports/ReportsProvider.jsx'
 
 function App() {
-  return <ReportForm />
+  return (
+    <ReportsProvider>
+      <ReportForm />
+    </ReportsProvider>
+  )
 }
 
 export default App
