@@ -40,3 +40,17 @@ npm run preview
 An automated application test suite has not been configured yet.
 
 See the root [README](../README.md) for project information and [CONTRIBUTING](../CONTRIBUTING.md) for the contribution workflow.
+
+### Sprint 1 report simulation
+
+Initial sample reports load from `public/data/reports.json`.
+Successful submissions are added to shared React state for the current session.
+Refreshing reloads the samples and removes newly submitted reports and photos.
+Reports are not uploaded or shared between users.
+
+During `npm run dev`, the reporting form includes a “Simulate submission
+failure” checkbox for testing failure feedback and retry. This control is
+hidden in production builds.
+
+The current success view is provisional; the complete confirmation screen
+and navigation are tracked under #62.

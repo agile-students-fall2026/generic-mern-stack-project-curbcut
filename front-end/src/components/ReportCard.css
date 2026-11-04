@@ -1,0 +1,64 @@
+.report-card {
+  display: block;
+  padding: 14px;
+  border: 1px solid var(--app-divider);
+  border-radius: 8px;
+  color: var(--app-text);
+  background: var(--app-background);
+  text-decoration: none;
+}
+
+.report-card:hover {
+  border-color: var(--app-primary);
+}
+
+.report-card:focus-visible {
+  outline: 3px solid var(--app-primary);
+  outline-offset: 3px;
+}
+
+.report-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.report-card__category,
+.report-card__status {
+  padding: 2px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.report-card__category {
+  color: var(--app-primary);
+  background: var(--app-selected);
+}
+
+/* Active is red, Resolved is green */
+.report-card__status {
+  color: var(--app-error);
+  border: 1px solid var(--app-error);
+}
+
+.report-card__status--resolved {
+  color: var(--app-success);
+  border-color: var(--app-success);
+}
+
+.report-card__location {
+  margin: 0;
+  font-weight: 700;
+}
+
+.report-card__description {
+  margin: 4px 0 0;
+}
+
+.report-card__times {
+  margin: 8px 0 0;
+  color: var(--app-muted);
+  font-size: 14px;
+}

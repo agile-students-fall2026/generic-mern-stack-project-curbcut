@@ -1,0 +1,40 @@
+/* Box under the search field */
+.suggestions {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--app-divider);
+  border-radius: 8px;
+}
+
+/* One building in the list */
+.suggestions__item {
+  display: block;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--app-divider);
+  color: var(--app-text);
+  text-decoration: none;
+}
+
+/* "See all results" button */
+.suggestions__button {
+  margin: 12px 12px 0 0;
+  padding: 10px 16px;
+  border: 1px solid var(--app-primary);
+  border-radius: 8px;
+  font: inherit;
+  font-weight: 600;
+  color: var(--app-primary);
+  background: var(--app-background);
+  cursor: pointer;
+}
+
+.suggestions__cancel {
+  margin-top: 12px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--app-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}
