@@ -10,6 +10,10 @@ import Search from './search/Search'
 import ReportForm from './reporting/ReportForm'
 import ReportsProvider from './reports/ReportsProvider'
 
+import SupportedBuildingsPage from './pages/SupportedBuildingsPage'
+import BuildingDetailsPage from './pages/BuildingDetailsPage'
+import EntranceDetailsPage from './pages/EntranceDetailsPage'
+
 function App() {
   return (
     // Shares Abdullah's report list with every screen (#65)
@@ -25,17 +29,14 @@ function App() {
           <Route path="/report" element={<ReportForm />} />
 
           {/* Buildings and entrances */}
-          <Route
-            path="/buildings"
-            element={<PlaceholderPage title="Supported buildings" />}
-          />
+          <Route path="/buildings" element={<SupportedBuildingsPage />} />
           <Route
             path="/buildings/:buildingId"
-            element={<PlaceholderPage title="Building details" />}
+            element={<BuildingDetailsPage />}
           />
           <Route
             path="/buildings/:buildingId/entrances/:entranceId"
-            element={<PlaceholderPage title="Entrance details" />}
+            element={<EntranceDetailsPage />}
           />
 
           {/* Reports and about */}
