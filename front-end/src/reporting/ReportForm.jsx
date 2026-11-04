@@ -4,6 +4,7 @@ import LocationSelector from './LocationSelector'
 import ObservationTimeEditor from './ObservationTimeEditor'
 import PhotoSelector from './PhotoSelector'
 import validateReport from './validateReport'
+import ReportConfirmation from './ReportConfirmation'
 import './ReportForm.css'
 
 function ReportForm() {
@@ -79,38 +80,11 @@ function ReportForm() {
 
   if (submittedReport) {
     return (
-      <main className="reporting">
-        <h1 className="reporting__title">Report submitted</h1>
-        <p role="status">
-          Your report was added to this session’s shared reports.
-        </p>
-
-        <p>
-          {submittedReport.category} — {submittedReport.status}
-        </p>
-
-        <p>Observed: {new Date(submittedReport.observedAt).toLocaleString()}</p>
-
-        {submittedReport.photo && (
-          <img
-            className="reporting__photo"
-            src={submittedReport.photo.url}
-            alt={submittedReport.photo.alt}
-          />
-        )}
-
-        <p className="reporting__hint">
-          Sprint 1 prototype: refreshing resets reports to the sample data.
-        </p>
-
-        <button
-          type="button"
-          className="reporting__button"
-          onClick={startNewReport}
-        >
-          Start another report
-        </button>
-      </main>
+      <ReportConfirmation
+        report={submittedReport}
+        location={location}
+        onNewReport={startNewReport}
+      />
     )
   }
 
