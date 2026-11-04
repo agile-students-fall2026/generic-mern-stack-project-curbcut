@@ -5,6 +5,7 @@ import BottomNav from './components/BottomNav'
 import PlaceholderPage from './components/PlaceholderPage'
 
 import Home from './home/Home'
+import Search from './search/Search'
 
 function App() {
   return (
@@ -13,7 +14,7 @@ function App() {
       <Routes>
         {/* Home and search */}
         <Route path="/" element={<Home />} />
-        <Route path="/search" element={<PlaceholderPage title="Search" />} />
+        <Route path="/search" element={<Search />} />
 
         {/* Reporting */}
         <Route
