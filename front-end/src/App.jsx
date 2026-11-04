@@ -1,10 +1,13 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
+import Navbar from './components/Navbar'
+import BottomNav from './components/BottomNav'
 import PlaceholderPage from './components/PlaceholderPage'
 
 function App() {
   return (
     <BrowserRouter>
+      <Navbar />
       <Routes>
         {/* Home and search */}
         <Route path="/" element={<PlaceholderPage title="Home" />} />
@@ -44,6 +47,7 @@ function App() {
           element={<PlaceholderPage title="About CurbCut" />}
         />
       </Routes>
+      <BottomNav />
     </BrowserRouter>
   )
 }
