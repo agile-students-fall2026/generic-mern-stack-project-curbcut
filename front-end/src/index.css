@@ -23,6 +23,15 @@ body {
   margin: 0;
 }
 
+/* A clear blue outline around whatever the keyboard is on */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--app-primary);
+  outline-offset: 2px;
+}
+
 p {
   margin: 0;
 }
