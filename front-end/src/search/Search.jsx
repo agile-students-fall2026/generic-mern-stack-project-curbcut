@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom'
 import SearchSuggestions from './SearchSuggestions'
 import SearchResults from './SearchResults'
 import RecentSearches from './RecentSearches'
+import useReports from '../reports/useReports'
+import sortNewestFirst from '../reports/sortNewestFirst'
 import './Search.css'
 
 // Earlier searches are kept out here so they stay while moving between pages.
@@ -21,8 +23,8 @@ function Search() {
   const [locations, setLocations] = useState([])
   const [error, setError] = useState('')
 
-  // Reports will come from Abdullah's shared report list in #65
-  const reports = []
+  // Abdullah's shared list of reports (#65)
+  const { reports } = useReports()
 
   // Load the buildings, and their entrances and floors, when the page opens
   useEffect(() => {
@@ -52,6 +54,19 @@ function Search() {
   for (const building of supportedBuildings) {
     if (building.name.toLowerCase().includes(search.toLowerCase())) {
       matchingBuildings.push(building)
+    }
+  }
+
+  // Reports whose category, description or building contains what the user
+  // typed, newest first
+  const matchingReports = []
+
+  for (const report of sortNewestFirst(reports)) {
+    const reportText =
+      report.category + ' ' + report.description + ' ' + report.buildingId
+
+    if (reportText.toLowerCase().includes(search.toLowerCase())) {
+      matchingReports.push(report)
     }
   }
 
@@ -155,6 +170,7 @@ function Search() {
       {search !== '' && !showResults && (
         <SearchSuggestions
           buildings={matchingBuildings}
+          reports={matchingReports}
           onSeeAll={() => showSearchResults(search)}
           onCancel={clearSearch}
         />
@@ -165,7 +181,7 @@ function Search() {
         <SearchResults
           search={search}
           buildings={matchingBuildings}
-          reports={reports}
+          reports={matchingReports}
           locations={locations}
           onNewSearch={clearSearch}
         />
