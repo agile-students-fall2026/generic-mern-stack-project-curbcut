@@ -4,7 +4,7 @@ import SearchSuggestions from './SearchSuggestions'
 import SearchResults from './SearchResults'
 import './Search.css'
 
-// The Search screen (M03 to M06)
+// The Search screen (M03 to M07)
 function Search() {
   // What the user has typed in the search box
   const [search, setSearch] = useState('')
@@ -137,9 +137,11 @@ function Search() {
       {/* After Enter or "See all results", show the full results */}
       {search !== '' && showResults && (
         <SearchResults
+          search={search}
           buildings={matchingBuildings}
           reports={reports}
           locations={locations}
+          onNewSearch={clearSearch}
         />
       )}
     </main>
