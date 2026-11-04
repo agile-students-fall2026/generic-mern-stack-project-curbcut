@@ -1,0 +1,106 @@
+.supported-buildings {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 16px 32px;
+  color: var(--app-text, #202124);
+  background: var(--app-background, #fff);
+  font-family: system-ui, sans-serif;
+  line-height: 1.5;
+}
+
+.supported-buildings-title {
+  margin: 0;
+  font-size: 1.75rem;
+  line-height: 1.2;
+}
+
+.supported-buildings-heading {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+}
+
+.supported-buildings-intro,
+.supported-buildings-address,
+.supported-buildings-disclaimer {
+  color: var(--app-muted, #555b65);
+}
+
+.supported-buildings-back,
+.supported-buildings-retry {
+  min-height: 44px;
+  padding: 8px 12px;
+  border: 1px solid var(--app-border, #767676);
+  border-radius: 6px;
+  color: var(--app-primary, #3548a3);
+  background: var(--app-background, #fff);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.supported-buildings-back {
+  margin: 0 0 20px -12px;
+  border: 0;
+}
+
+.supported-buildings-back:focus-visible,
+.supported-buildings-retry:focus-visible {
+  outline: 3px solid var(--app-primary, #3548a3);
+  outline-offset: 4px;
+}
+
+.supported-buildings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.supported-buildings-planned {
+  margin-top: 36px;
+}
+
+.supported-buildings-planned-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--app-divider, #d9dce1);
+}
+
+.supported-buildings-name {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.supported-buildings-address {
+  margin: 4px 0 0;
+  font-size: 0.875rem;
+}
+
+.supported-buildings-badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: var(--app-muted, #555b65);
+  background: var(--app-surface, #f5f6f8);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.supported-buildings-disclaimer {
+  margin: 32px 0 0;
+  font-size: 0.875rem;
+}
+
+.supported-buildings-error {
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid var(--app-error, #b42318);
+  border-radius: 8px;
+}

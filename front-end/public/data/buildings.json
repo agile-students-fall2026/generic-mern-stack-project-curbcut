@@ -1,0 +1,59 @@
+{
+  "dataKind": "mock",
+  "buildings": [
+    {
+      "id": "kimmel-center",
+      "name": "Kimmel Center",
+      "address": "60 Washington Square South, New York, NY",
+      "availability": "available",
+      "photo": null,
+      "lastVerifiedAt": null,
+      "elevators": [
+        {
+          "id": "kimmel-elevator-a",
+          "name": "Elevator A"
+        },
+        {
+          "id": "kimmel-elevator-b",
+          "name": "Elevator B"
+        }
+      ]
+    },
+    {
+      "id": "bobst-library",
+      "name": "Bobst Library",
+      "address": "70 Washington Sq S",
+      "availability": "coming-soon",
+      "photo": null,
+      "lastVerifiedAt": null,
+      "elevators": null
+    },
+    {
+      "id": "silver-center",
+      "name": "Silver Center",
+      "address": "100 Washington Sq E",
+      "availability": "coming-soon",
+      "photo": null,
+      "lastVerifiedAt": null,
+      "elevators": null
+    },
+    {
+      "id": "warren-weaver-hall",
+      "name": "Warren Weaver Hall",
+      "address": "251 Mercer St",
+      "availability": "coming-soon",
+      "photo": null,
+      "lastVerifiedAt": null,
+      "elevators": null
+    },
+    {
+      "id": "tisch-hall",
+      "name": "Tisch Hall",
+      "address": "40 W 4th St",
+      "availability": "coming-soon",
+      "photo": null,
+      "lastVerifiedAt": null,
+      "elevators": null
+    }
+  ]
+}
