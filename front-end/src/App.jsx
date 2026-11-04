@@ -7,6 +7,8 @@ import PlaceholderPage from './components/PlaceholderPage'
 import Home from './home/Home'
 import Search from './search/Search'
 
+import ReportForm from './reporting/ReportForm'
+
 function App() {
   return (
     <BrowserRouter>
@@ -17,10 +19,7 @@ function App() {
         <Route path="/search" element={<Search />} />
 
         {/* Reporting */}
-        <Route
-          path="/report"
-          element={<PlaceholderPage title="Report a barrier" />}
-        />
+        <Route path="/report" element={<ReportForm />} />
 
         {/* Buildings and entrances */}
         <Route
