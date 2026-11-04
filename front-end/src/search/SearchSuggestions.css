@@ -1,0 +1,27 @@
+/* Box under the search field */
+.suggestions {
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--app-divider);
+  border-radius: 8px;
+}
+
+/* One building in the list */
+.suggestions__item {
+  display: block;
+  padding: 10px 4px;
+  border-bottom: 1px solid var(--app-divider);
+  color: var(--app-text);
+  text-decoration: none;
+}
+
+.suggestions__cancel {
+  margin-top: 12px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-weight: 600;
+  color: var(--app-primary);
+  text-decoration: underline;
+  cursor: pointer;
+}

@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
+import SearchSuggestions from './SearchSuggestions'
 import './Search.css'
 
-// The Search screen (M03)
+// The Search screen (M03, M04)
 function Search() {
   // What the user has typed in the search box
   const [search, setSearch] = useState('')
@@ -23,6 +24,15 @@ function Search() {
   for (const building of buildings) {
     if (building.availability === 'available') {
       supportedBuildings.push(building)
+    }
+  }
+
+  // Supported buildings whose name contains what the user typed
+  const matchingBuildings = []
+
+  for (const building of supportedBuildings) {
+    if (building.name.toLowerCase().includes(search.toLowerCase())) {
+      matchingBuildings.push(building)
     }
   }
 
@@ -78,6 +88,14 @@ function Search() {
             building page for documented entrance information.
           </p>
         </div>
+      )}
+
+      {/* While the user is typing, show matching buildings */}
+      {search !== '' && (
+        <SearchSuggestions
+          buildings={matchingBuildings}
+          onCancel={() => setSearch('')}
+        />
       )}
     </main>
   )
