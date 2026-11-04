@@ -1,103 +1,163 @@
-import { useState } from "react";
-import './BrowseReports.css';
+import { useEffect, useState } from 'react'
+import ReportCard from '../components/ReportCard'
+import useReports from '../reports/useReports'
+import sortNewestFirst from '../reports/sortNewestFirst'
+import './BrowseReports.css'
 
-//Temporary mock data
-const mockReports = [
-    {
-        id: 1,
-        buildingId: "kimmel-center",
-        entranceId: null,
-        floorId: null,
-        category: "Construction",
-        description: "Construction work is being done on the 3rd floor of Bobst Library. Please use alternate routes.",
-        observedAt: "2023-06-01T10:00:00Z",
-        createdAt: "2023-06-01T10:00:00Z",
-        updatedAt: "2023-06-01T10:00:00Z",
-        photo: "https://picsum.photos/200/300",
-        status: "Active"
-    },
-    {
-        id: 2,
-        buildingId: "bobst-library",
-        entranceId: null,
-        floorId: null,
-        category: "Blocked Ramp",
-        description: "Blocked ramp at Bobst Library. Please use alternate routes.",
-        observedAt: "2023-06-01T10:00:00Z",
-        createdAt: "2023-06-01T10:00:00Z",
-        updatedAt: "2023-08-01T10:00:00Z",
-        photo: "https://picsum.photos/200/300",
-        status: "Closed"
-    },
-    {
-        id: 3,
-        buildingId: "silver-center",
-        entranceId: null,
-        floorId: null,
-        category: "Door Issue",
-        description: "Front door at Silver Center is stuck. Please use alternate routes.",
-        observedAt: "2023-06-01T10:00:00Z",
-        createdAt: "2023-06-01T10:00:00Z",
-        updatedAt: "2023-06-01T10:00:00Z",
-        photo: "https://picsum.photos/200/300",
-        status: "Active"
-    }
-];
-    
-export default function BrowseReports() {
-    const [search, setSearch] = useState("");
-    const [status, setStatus] = useState("All");
+function BrowseReports() {
+    // Use the same report list as Home and Search.
+    const { reports, loading, error, retryLoad } = useReports()
+    const [locations, setLocations] = useState([])
+    const [locationsError, setLocationsError] = useState('')
+    const [search, setSearch] = useState('')
+    const [status, setStatus] = useState('All')
 
-    const filteredReports = mockReports.filter(report => {
-        const searchTerm = search.toLowerCase();
-        const matchesSearch = report.category.toLowerCase().includes(searchTerm) || report.buildingId.toLowerCase().includes(searchTerm);
-        const matchesStatus = status === "All" || report.status === status;
-        
-        return matchesSearch && matchesStatus;
-    });
+    useEffect(() => {
+        // ReportCard uses this list to turn entrance and floor IDs into names.
+        const controller = new AbortController()
+
+        async function loadLocations() {
+            try {
+                const response = await fetch(
+                    `${import.meta.env.BASE_URL}data/locations.json`,
+                    { signal: controller.signal },
+                )
+
+                if (!response.ok) {
+                    throw new Error('Location details could not be loaded.')
+                }
+
+                const data = await response.json()
+
+                if (!Array.isArray(data)) {
+                    throw new Error('Location details are invalid.')
+                }
+
+                if (!controller.signal.aborted) {
+                    setLocations(data)
+                    setLocationsError('')
+                }
+            } catch (loadError) {
+                if (!controller.signal.aborted) {
+                    setLocationsError(loadError.message)
+                }
+            }
+        }
+
+        loadLocations()
+
+        return () => controller.abort()
+    }, [])
+
+    // Search readable location names as well as report details; keep results newest first.
+    const searchTerm = search.trim().toLowerCase()
+    const filteredReports = sortNewestFirst(reports).filter((report) => {
+        const location = locations.find(
+            (item) =>
+                item.locationId === report.entranceId ||
+                item.locationId === report.floorId,
+        )
+        const searchableText = [
+            report.category,
+            report.description,
+            report.buildingId,
+            location?.buildingName,
+            location?.locationName,
+        ]
+            .join(' ')
+            .toLowerCase()
+
+        return (
+            (searchTerm === '' || searchableText.includes(searchTerm)) &&
+            (status === 'All' || report.status === status)
+        )
+    })
 
     return (
         <main className="browse-reports">
-            <h1>Browse Reports</h1>
-        
-            <input
-                className="search-input"
-                type="search"
-                placeholder="Search by category or building"
-                value={search}
-                onChange={event => setSearch(event.target.value)}
-            />
-            <select
-                className="status-filter"
-                value={status}
-                onChange={event => setStatus(event.target.value)}
-                aria-label="Filter reports by status"
-            >
-                <option value="All">All statuses</option>
-                <option value="Active">Active</option>
-                <option value="Closed">Closed</option>
-            </select>
+            <h1 className="browse-reports__title">Browse reports</h1>
 
-            <section className="reports-list">
-                {filteredReports.length === 0 ? (
-                    <p>No reports found.</p>
-                ) : (
-                    filteredReports.map(report => (
-                        <article className="report-card" key={report.id}>
-                            {report.photo && <img src={report.photo} alt={`${report.category} report`} />}
-                            <div className="report-details">
-                                <span className="report-status">{report.status}</span>
-                                <h2 className="report-title">{report.category}</h2>
-                                <p className="report-buildingId">{report.buildingId}</p>
-                                <p className="report-description">{report.description}</p>
-                                <p className="report-observedAt">
-                                    Observed {new Date(report.observedAt).toLocaleDateString()}
-                                </p>
-                            </div>
-                        </article>
-                    ))
-                )}
-            </section>
+            <div className="browse-reports__controls">
+                <div>
+                    <label className="browse-reports__label" htmlFor="reports-search">
+                        Search reports
+                    </label>
+                    <input
+                        id="reports-search"
+                        className="browse-reports__input"
+                        type="search"
+                        placeholder="Category, location, or details"
+                        value={search}
+                        onChange={(event) => setSearch(event.target.value)}
+                    />
+                </div>
+
+                <div>
+                    <label className="browse-reports__label" htmlFor="reports-status">
+                        Status
+                    </label>
+                    <select
+                        id="reports-status"
+                        className="browse-reports__select"
+                        value={status}
+                        onChange={(event) => setStatus(event.target.value)}
+                    >
+                        <option value="All">All statuses</option>
+                        <option value="Active">Active</option>
+                        <option value="Resolved">Resolved</option>
+                    </select>
+                </div>
+            </div>
+
+            {error !== '' && (
+                <div className="browse-reports__error" role="alert">
+                    <p>{error}</p>
+                    <button type="button" onClick={retryLoad}>
+                        Retry loading reports
+                    </button>
+                </div>
+            )}
+
+            {/* Reports and location details load independently. */}
+            {locationsError !== '' && (
+                <p className="browse-reports__notice" role="status">
+                    {locationsError} Report cards may show an unknown location.
+                </p>
+            )}
+
+            {loading ? (
+                <p className="browse-reports__notice" role="status">
+                    Loading reports...
+                </p>
+            ) : error === '' ? (
+                <>
+                    <p className="browse-reports__count" aria-live="polite">
+                        {filteredReports.length}{' '}
+                        {filteredReports.length === 1 ? 'report' : 'reports'}
+                    </p>
+
+                    {filteredReports.length === 0 ? (
+                        <p className="browse-reports__empty">
+                            {reports.length === 0
+                                ? 'No reports have been posted yet.'
+                                : 'No reports match your search and status filters.'}
+                        </p>
+                    ) : (
+                        <section className="browse-reports__list" aria-label="Reports">
+                            {/* The shared card also links each result to its detail page. */}
+                            {filteredReports.map((report) => (
+                                <ReportCard
+                                    key={report.id}
+                                    report={report}
+                                    locations={locations}
+                                />
+                            ))}
+                        </section>
+                    )}
+                </>
+            ) : null}
         </main>
-    );
+    )
 }
+
+export default BrowseReports
