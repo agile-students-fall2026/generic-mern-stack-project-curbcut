@@ -1,0 +1,45 @@
+.floors-elevators {
+  margin-top: 32px;
+}
+
+.floors-elevators-heading {
+  margin: 0 0 12px;
+  font-size: 1.25rem;
+}
+
+.floors-elevators-scroll {
+  overflow-x: auto;
+}
+
+.floors-elevators-scroll:focus-visible {
+  outline: 3px solid var(--app-primary, #3548a3);
+  outline-offset: 3px;
+}
+
+.floors-elevators-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.floors-elevators-caption {
+  padding-bottom: 8px;
+  text-align: left;
+  color: var(--app-muted, #555b65);
+}
+
+.floors-elevators-cell {
+  padding: 12px 8px;
+  border: 1px solid var(--app-divider, #d9dce1);
+  vertical-align: top;
+}
+
+.floors-elevators-note {
+  color: var(--app-muted, #555b65);
+  font-size: 0.875rem;
+}
+
+.floors-elevators-floor {
+  white-space: nowrap;
+}

@@ -1,0 +1,18 @@
+.recent__title {
+  margin-top: 24px;
+  font-size: 20px;
+}
+
+/* One earlier search; clicking it searches again */
+.recent__item {
+  display: block;
+  width: 100%;
+  padding: 10px 4px;
+  border: 0;
+  border-bottom: 1px solid var(--app-divider);
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: var(--app-text);
+  cursor: pointer;
+}
