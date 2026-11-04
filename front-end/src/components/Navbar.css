@@ -1,0 +1,90 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 640px;
+  margin-inline: auto;
+  padding: 6px 8px;
+  box-sizing: border-box;
+  border-bottom: 1px solid var(--app-divider);
+  background: var(--app-background);
+}
+
+/* Menu and close buttons */
+.navbar__icon-button {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  font-size: 24px;
+  line-height: 1;
+  color: var(--app-text);
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Plain text link back to Home, no logo */
+.navbar__home-link {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--app-text);
+  text-decoration: none;
+}
+
+/* Menu overlay */
+.navbar__menu {
+  width: min(400px, calc(100% - 32px));
+  margin: auto;
+  padding: 20px;
+  box-sizing: border-box;
+  border: 1px solid var(--app-border);
+  border-radius: 12px;
+  color: var(--app-text);
+  background: var(--app-background);
+  font: inherit;
+}
+
+.navbar__menu::backdrop {
+  background: rgb(0 0 0 / 45%);
+}
+
+.navbar__menu-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.navbar__menu-header h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.navbar__links {
+  display: grid;
+  margin-top: 12px;
+}
+
+.navbar__link {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--app-divider);
+  font-weight: 600;
+  color: var(--app-text);
+  text-decoration: none;
+}
+
+/* NavLink marks the current page with aria-current */
+.navbar__link[aria-current='page'] {
+  color: var(--app-primary);
+}
+
+.navbar__icon-button:focus-visible,
+.navbar__home-link:focus-visible,
+.navbar__link:focus-visible {
+  outline: 3px solid var(--app-primary);
+  outline-offset: 3px;
+}

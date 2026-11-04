@@ -1,0 +1,66 @@
+.building-card {
+  display: block;
+  padding: 20px;
+  border: 1px solid var(--app-border, #767676);
+  border-radius: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.building-card:hover {
+  border-color: var(--app-primary, #3548a3);
+  background: var(--app-selected, #eef1ff);
+}
+
+.building-card:focus-visible {
+  outline: 3px solid var(--app-primary, #3548a3);
+  outline-offset: 4px;
+}
+
+.building-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin-bottom: 8px;
+}
+
+.building-card-name {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.building-card-badge {
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: var(--app-success, #1d6b3f);
+  background: var(--app-surface, #f5f6f8);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.building-card-address {
+  margin: 0;
+  color: var(--app-muted, #555b65);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+}
+
+.building-card-coverage {
+  margin: 16px 0 0;
+  font-size: 0.875rem;
+}
+
+.building-card-detail {
+  margin: 4px 0 0;
+}
+
+.building-card-open {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+  color: var(--app-primary, #3548a3);
+  font-weight: 600;
+}
