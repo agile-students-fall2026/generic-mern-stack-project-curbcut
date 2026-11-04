@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import SearchSuggestions from './SearchSuggestions'
 import SearchResults from './SearchResults'
+import RecentSearches from './RecentSearches'
 import './Search.css'
+
+// Earlier searches are kept out here so they stay while moving between pages.
+// They are cleared when the page is refreshed.
+let savedSearches = []
 
 // The Search screen (M03 to M07)
 function Search() {
@@ -10,6 +15,8 @@ function Search() {
   const [search, setSearch] = useState('')
   // Becomes true when the user presses Enter or "See all results"
   const [showResults, setShowResults] = useState(false)
+  // Searches made earlier in this visit, newest first
+  const [recentSearches, setRecentSearches] = useState(savedSearches)
   const [buildings, setBuildings] = useState([])
   const [locations, setLocations] = useState([])
   const [error, setError] = useState('')
@@ -54,11 +61,25 @@ function Search() {
     setShowResults(false)
   }
 
-  // Show the full results, but only if something was typed
-  function showSearchResults() {
-    if (search.trim() !== '') {
-      setShowResults(true)
+  // Show the full results for a search, but only if it is not empty
+  function showSearchResults(text) {
+    if (text.trim() === '') {
+      return
     }
+
+    // Put this search at the top of the list, without repeating it
+    const updatedSearches = [text]
+
+    for (const oldSearch of recentSearches) {
+      if (oldSearch !== text) {
+        updatedSearches.push(oldSearch)
+      }
+    }
+
+    savedSearches = updatedSearches
+    setRecentSearches(updatedSearches)
+    setSearch(text)
+    setShowResults(true)
   }
 
   // Empty the search box and go back to the start
@@ -74,7 +95,7 @@ function Search() {
       <form
         onSubmit={(event) => {
           event.preventDefault()
-          showSearchResults()
+          showSearchResults(search)
         }}
       >
         <label className="search__label" htmlFor="search-input">
@@ -106,6 +127,11 @@ function Search() {
 
       {search === '' && (
         <div>
+          <RecentSearches
+            searches={recentSearches}
+            onSelect={(item) => showSearchResults(item)}
+          />
+
           <h2 className="search__subtitle">Supported buildings</h2>
 
           {supportedBuildings.map((building) => (
@@ -129,7 +155,7 @@ function Search() {
       {search !== '' && !showResults && (
         <SearchSuggestions
           buildings={matchingBuildings}
-          onSeeAll={showSearchResults}
+          onSeeAll={() => showSearchResults(search)}
           onCancel={clearSearch}
         />
       )}
