@@ -6,6 +6,7 @@ import PlaceholderPage from './components/PlaceholderPage'
 
 import Home from './home/Home'
 import Search from './search/Search'
+import About from './about/About'
 
 import ReportRoute from './reporting/ReportRoute'
 import ReportsProvider from './reports/ReportsProvider'
@@ -50,7 +51,7 @@ function App() {
           />
           <Route
             path="/about"
-            element={<PlaceholderPage title="About CurbCut" />}
+            element={<About />}
           />
         </Routes>
         <BottomNav />
