@@ -34,7 +34,7 @@ function BuildingDetailsPage() {
       reports={reports}
       getEntranceHref={getEntranceLink}
       getReportHref={getReportLink}
-      browseReportsHref="/browse"
+      browseReportsHref={`/browse?buildingId=${encodeURIComponent(buildingId)}`}
       reportBarrierHref={'/report?buildingId=' + buildingId}
       onBack={goBack}
     />

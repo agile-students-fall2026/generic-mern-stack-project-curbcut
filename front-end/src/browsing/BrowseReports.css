@@ -12,7 +12,7 @@
 
 .browse-reports__controls {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr) minmax(140px, 180px);
+	grid-template-columns: minmax(0, 1fr) auto;
 	gap: 12px;
 	align-items: end;
 }
@@ -36,10 +36,105 @@
 	font: inherit;
 }
 
+.browse-reports__filter-button,
+.browse-reports__load-more {
+	min-height: 46px;
+	padding: 10px 16px;
+	border: 1px solid var(--app-border);
+	border-radius: 6px;
+	color: var(--app-text);
+	background: var(--app-background);
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.browse-reports__status-tabs {
+	display: flex;
+	gap: 8px;
+	margin-top: 16px;
+	border-bottom: 1px solid var(--app-divider);
+}
+
+.browse-reports__status-tabs button {
+	padding: 8px 12px;
+	border: 0;
+	border-bottom: 3px solid transparent;
+	color: var(--app-muted);
+	background: transparent;
+	font: inherit;
+	cursor: pointer;
+}
+
+.browse-reports__status-tabs button.is-selected {
+	border-bottom-color: var(--app-primary);
+	color: var(--app-primary);
+	font-weight: 700;
+}
+
+.browse-reports__building {
+	margin-bottom: 12px;
+}
+
+.browse-reports__dialog {
+	box-sizing: border-box;
+	width: min(100% - 32px, 480px);
+	max-height: min(90vh, 720px);
+	padding: 24px;
+	border: 1px solid var(--app-divider);
+	border-radius: 8px;
+	color: var(--app-text);
+	background: var(--app-background);
+}
+
+.browse-reports__dialog::backdrop {
+	background: rgb(20 24 30 / 45%);
+}
+
+.browse-reports__dialog h2 {
+	margin: 0 0 20px;
+	font-size: 22px;
+}
+
+.browse-reports__dialog > form > .browse-reports__label {
+	margin-top: 16px;
+}
+
+.browse-reports__dialog-actions {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 24px;
+}
+
+.browse-reports__dialog-actions button {
+	min-height: 40px;
+	padding: 8px 12px;
+	border: 1px solid var(--app-border);
+	border-radius: 6px;
+	color: var(--app-text);
+	background: var(--app-background);
+	font: inherit;
+	font-weight: 600;
+	cursor: pointer;
+}
+
+.browse-reports__dialog-actions button[type='submit'] {
+	border-color: var(--app-primary);
+	color: white;
+	background: var(--app-primary);
+}
+
 .browse-reports__count {
 	margin: 16px 0 8px;
 	color: var(--app-muted);
 	font-size: 14px;
+}
+
+.browse-reports__load-more {
+	display: block;
+	margin: 16px auto 0;
 }
 
 .browse-reports__list {
@@ -81,5 +176,9 @@
 @media (max-width: 480px) {
 	.browse-reports__controls {
 		grid-template-columns: 1fr;
+	}
+
+	.browse-reports__filter-button {
+		width: 100%;
 	}
 }

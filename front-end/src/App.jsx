@@ -14,6 +14,7 @@ import ReportsProvider from './reports/ReportsProvider'
 import SupportedBuildingsPage from './pages/SupportedBuildingsPage'
 import BuildingDetailsPage from './pages/BuildingDetailsPage'
 import EntranceDetailsPage from './pages/EntranceDetailsPage'
+import ReportDetailsPage from './pages/ReportDetailsPage'
 
 function App() {
   return (
@@ -42,10 +43,7 @@ function App() {
 
           {/* Reports and about */}
           <Route path="/browse" element={<BrowseReports />} />
-          <Route
-            path="/reports/:reportId"
-            element={<PlaceholderPage title="Report details" />}
-          />
+          <Route path="/reports/:reportId" element={<ReportDetailsPage />} />
           <Route
             path="/about"
             element={<PlaceholderPage title="About CurbCut" />}
