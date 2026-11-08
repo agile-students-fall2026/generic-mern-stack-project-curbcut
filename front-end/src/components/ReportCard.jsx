@@ -35,7 +35,12 @@ function ReportCard({ report, locations }) {
 
       <p className="report-card__location">{locationName}</p>
 
-      <p className="report-card__description">{report.description}</p>
+      <h2 className="report-card__title">
+        {report.title || report.description}
+      </h2>
+      {report.title && (
+        <p className="report-card__description">{report.description}</p>
+      )}
 
       <p className="report-card__times">Observed {observedTime}</p>
       <p className="report-card__times">Updated {updatedTime}</p>
