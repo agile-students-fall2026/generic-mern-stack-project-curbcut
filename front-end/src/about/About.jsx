@@ -31,7 +31,10 @@ function About() {
           locationsResponse.json(),
         ])
 
-        if (!Array.isArray(buildingData.buildings) || !Array.isArray(locations)) {
+        if (
+          !Array.isArray(buildingData.buildings) ||
+          !Array.isArray(locations)
+        ) {
           throw new Error('Coverage information is invalid.')
         }
 
@@ -126,8 +129,8 @@ function About() {
         <p>
           People contribute reports through the report form by selecting a
           location and barrier category, recording when they observed it, and
-          adding a description. Reports reflect conditions at the time they
-          were observed and may become outdated.
+          adding a description. Reports reflect conditions at the time they were
+          observed and may become outdated.
         </p>
         <p className="about__notice">
           A missing report does not confirm that a building or route is

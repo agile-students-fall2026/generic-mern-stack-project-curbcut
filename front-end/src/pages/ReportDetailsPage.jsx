@@ -37,14 +37,20 @@ function ReportDetailsPage() {
   }, [])
 
   if (loading) {
-    return <main className="report-details"><p role="status">Loading report...</p></main>
+    return (
+      <main className="report-details">
+        <p role="status">Loading report...</p>
+      </main>
+    )
   }
 
   if (error) {
     return (
       <main className="report-details">
         <p role="alert">{error}</p>
-        <button type="button" onClick={retryLoad}>Retry loading reports</button>
+        <button type="button" onClick={retryLoad}>
+          Retry loading reports
+        </button>
       </main>
     )
   }
@@ -61,7 +67,9 @@ function ReportDetailsPage() {
   }
 
   const location = locations.find(
-    (item) => item.locationId === report.entranceId || item.locationId === report.floorId,
+    (item) =>
+      item.locationId === report.entranceId ||
+      item.locationId === report.floorId,
   )
   const locationName = location
     ? `${location.buildingName} - ${location.locationName}`
@@ -71,26 +79,44 @@ function ReportDetailsPage() {
 
   return (
     <main className="report-details">
-      <Link className="report-details__back" to="/browse">Back to reports</Link>
+      <Link className="report-details__back" to="/browse">
+        Back to reports
+      </Link>
       <p className="report-details__location">{locationName}</p>
       <h1>{report.title || report.description}</h1>
       <div className="report-details__tags">
         <span>{report.category}</span>
-        <span className={`report-details__status report-details__status--${report.status.toLowerCase()}`}>
+        <span
+          className={`report-details__status report-details__status--${report.status.toLowerCase()}`}
+        >
           {report.status}
         </span>
       </div>
       {report.photo?.url ? (
-        <img className="report-details__photo" src={report.photo.url} alt={report.photo.alt || ''} />
+        <img
+          className="report-details__photo"
+          src={report.photo.url}
+          alt={report.photo.alt || ''}
+        />
       ) : (
-        <div className="report-details__photo-placeholder" role="img" aria-label="No photo attached">
+        <div
+          className="report-details__photo-placeholder"
+          role="img"
+          aria-label="No photo attached"
+        >
           No photo attached
         </div>
       )}
       <p className="report-details__description">{report.description}</p>
       <dl className="report-details__times">
-        <div><dt>First observed</dt><dd>{new Date(report.observedAt).toLocaleString()}</dd></div>
-        <div><dt>Last updated</dt><dd>{new Date(report.updatedAt).toLocaleString()}</dd></div>
+        <div>
+          <dt>First observed</dt>
+          <dd>{new Date(report.observedAt).toLocaleString()}</dd>
+        </div>
+        <div>
+          <dt>Last updated</dt>
+          <dd>{new Date(report.updatedAt).toLocaleString()}</dd>
+        </div>
       </dl>
     </main>
   )
