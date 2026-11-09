@@ -1,7 +1,7 @@
 // All the words a report can be found by: its category, its description,
 // and the names of its building and its entrance or floor
 function getReportSearchText(report, locations) {
-  let text = report.category + ' ' + report.description
+  let text = `${report.title ?? ''} ${report.category} ${report.description}`
 
   // Find the entrance or floor this report is about, and add its names
   for (const item of locations) {
