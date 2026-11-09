@@ -6,8 +6,15 @@ import './SearchResults.css'
 
 // The full results with a Buildings tab and a Barriers tab (M05 to M07)
 function SearchResults({ search, buildings, reports, locations, onNewSearch }) {
+  // Open the Barriers tab first when only barriers match the search
+  let firstTab = 'buildings'
+
+  if (buildings.length === 0 && reports.length > 0) {
+    firstTab = 'barriers'
+  }
+
   // Which tab is open: 'buildings' or 'barriers'
-  const [tab, setTab] = useState('buildings')
+  const [tab, setTab] = useState(firstTab)
 
   // The open tab is underlined in blue
   let buildingsTabClass = 'results__tab'

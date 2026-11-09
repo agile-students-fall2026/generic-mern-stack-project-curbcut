@@ -5,6 +5,7 @@ import SearchResults from './SearchResults'
 import RecentSearches from './RecentSearches'
 import useReports from '../reports/useReports'
 import sortNewestFirst from '../reports/sortNewestFirst'
+import getReportSearchText from '../reports/getReportSearchText'
 import './Search.css'
 
 // Earlier searches are kept out here so they stay while moving between pages.
@@ -39,6 +40,9 @@ function Search() {
       .catch(() => setError('Buildings could not be loaded. Please refresh.'))
   }, [])
 
+  // What the user typed, without extra spaces and in small letters
+  const searchText = search.trim().toLowerCase()
+
   // Keep only the buildings CurbCut covers right now
   const supportedBuildings = []
 
@@ -52,20 +56,20 @@ function Search() {
   const matchingBuildings = []
 
   for (const building of supportedBuildings) {
-    if (building.name.toLowerCase().includes(search.toLowerCase())) {
+    if (building.name.toLowerCase().includes(searchText)) {
       matchingBuildings.push(building)
     }
   }
 
-  // Reports whose category, description or building contains what the user
-  // typed, newest first
+  // Reports whose category, description, building or entrance or floor
+  // contains what the user typed, newest first
   const matchingReports = []
 
   for (const report of sortNewestFirst(reports)) {
-    const reportText =
-      report.category + ' ' + report.description + ' ' + report.buildingId
+    // All the words this report can be found by
+    const reportText = getReportSearchText(report, locations)
 
-    if (reportText.toLowerCase().includes(search.toLowerCase())) {
+    if (reportText.includes(searchText)) {
       matchingReports.push(report)
     }
   }
