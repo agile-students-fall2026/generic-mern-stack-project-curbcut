@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import ReportCard from '../components/ReportCard'
 import useReports from '../reports/useReports'
+import getReportSearchText from '../reports/getReportSearchText'
 import './BrowseReports.css'
 
 const PAGE_SIZE = 10
@@ -62,15 +63,15 @@ function BrowseReports() {
     return () => controller.abort()
   }, [])
 
-  const searchTerm = search.toLowerCase()
+  const searchTerm = search.trim().toLowerCase()
   const categories = [
     ...new Set(reports.map((report) => report.category)),
   ].sort()
   const now = new Date()
 
   function matchesConditions(report, selectedFilters) {
-    const searchableText =
-      `${report.category} ${report.description} ${report.buildingId}`.toLowerCase()
+    // Includes the building and entrance or floor names, so "Kimmel Center" works
+    const searchableText = getReportSearchText(report, locations)
     const observedAt = new Date(report.observedAt)
     let observationStart = null
 
