@@ -41,7 +41,7 @@ We do not plan to add automatic route planning although it could be a possible f
 
 ## Project Status
 
-CurbCut is currently in Sprint 1: front-end development. The React project has been initialized using Vite. Application screens and interactions are being implemented from the wireframes and clickable prototype.
+CurbCut is currently in Sprint 2: back-end development. The React front end is built, and an Express back end is being added that sends the app its data as mock JSON.
 
 ## Front-end Setup
 
@@ -67,7 +67,29 @@ npm run build
 Run `npm run format` from `front-end/` to apply formatting before running these checks.
 The build output is generated in front-end/dist/ and is excluded from version control.
 
-The current front end contains the React starter application. No backend or environment variables are required to run it.
+While developing, the front end sends every request that starts with `/api` to the back end on port 3000. Start the back end as well, as described below.
+
+## Back-end Setup
+
+From the repository root, in a second terminal:
+
+```bash
+cd back-end
+npm install
+npm run dev
+```
+
+The back end runs at http://localhost:3000. Open http://localhost:3000/api to check that it is running. Press Ctrl+C to stop it.
+
+To change the port, copy `back-end/.env.example` to `back-end/.env` and edit it. Never commit a `.env` file. If a teammate needs one, it is shared in the team's Discord channel.
+
+To run the back-end tests and see the code coverage, run this from `back-end/`:
+
+```bash
+npm test
+```
+
+Each developer's routes are in their own file in `back-end/routes/`, and their tests are in `back-end/test/`. The mock data is in `back-end/data/`.
 
 ## UX Design
 
@@ -85,7 +107,7 @@ CurbCut will be a full-stack JavaScript web app built with:
 - **Express.js** on **Node.js** for the back end
 - **MongoDB** with **Mongoose** for storing buildings, entrances and reports
 
-Front-end setup instructions are provided above. Backend setup instructions will be added when backend implementation begins.
+Front-end and back-end setup instructions are provided above.
 
 ## Repository Structure
 
