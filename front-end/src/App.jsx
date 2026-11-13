@@ -15,6 +15,7 @@ import SupportedBuildingsPage from './pages/SupportedBuildingsPage'
 import BuildingDetailsPage from './pages/BuildingDetailsPage'
 import EntranceDetailsPage from './pages/EntranceDetailsPage'
 import ReportDetailsPage from './pages/ReportDetailsPage'
+import NotFoundPage from './pages/NotFoundPage'
 
 function App() {
   return (
@@ -45,6 +46,9 @@ function App() {
           <Route path="/browse" element={<BrowseReports />} />
           <Route path="/reports/:reportId" element={<ReportDetailsPage />} />
           <Route path="/about" element={<About />} />
+
+          {/* Any other address shows the Page not found screen */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
         <BottomNav />
       </BrowserRouter>
