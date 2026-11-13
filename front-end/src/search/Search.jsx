@@ -6,18 +6,14 @@ import RecentSearches from './RecentSearches'
 import sortNewestFirst from '../reports/sortNewestFirst'
 import './Search.css'
 
-// Earlier searches are kept out here so they stay while moving between pages.
-// They are cleared when the page is refreshed.
-let savedSearches = []
-
 // The Search screen (M03 to M07)
 function Search() {
   // What the user has typed in the search box
   const [search, setSearch] = useState('')
   // Becomes true when the user presses Enter or "See all results"
   const [showResults, setShowResults] = useState(false)
-  // Searches made earlier in this visit, newest first
-  const [recentSearches, setRecentSearches] = useState(savedSearches)
+  // Searches made earlier, newest first. They are saved on the back end.
+  const [recentSearches, setRecentSearches] = useState([])
   // The buildings CurbCut covers right now
   const [supportedBuildings, setSupportedBuildings] = useState([])
   // The buildings and reports that match what the user typed
@@ -27,11 +23,16 @@ function Search() {
   const [locations, setLocations] = useState([])
   const [error, setError] = useState('')
 
-  // When the page opens, ask the back end for the supported buildings and
-  // for the entrances and floors
+  // When the page opens, ask the back end for the recent searches, the
+  // supported buildings, and the entrances and floors
   useEffect(() => {
-    async function loadBuildingsAndLocations() {
+    async function loadStartScreen() {
       try {
+        const recentResponse = await fetch('/api/recent-searches')
+        const recentData = await recentResponse.json()
+
+        setRecentSearches(recentData)
+
         // A search with nothing typed sends back every supported building
         const searchResponse = await fetch('/api/search?q=')
         const searchData = await searchResponse.json()
@@ -47,7 +48,7 @@ function Search() {
       }
     }
 
-    loadBuildingsAndLocations()
+    loadStartScreen()
   }, [])
 
   // Every time the search box changes, ask the back end what matches
@@ -79,23 +80,32 @@ function Search() {
     setShowResults(false)
   }
 
+  // Send a search to the back end, which saves it and sends back the new list
+  async function saveSearch(text) {
+    try {
+      const response = await fetch('/api/recent-searches', {
+        // POST means we are sending something, not just asking
+        method: 'POST',
+        // Tells the back end that what we send is JSON
+        headers: { 'Content-Type': 'application/json' },
+        // The search itself, like { "search": "ramp" }
+        body: JSON.stringify({ search: text }),
+      })
+      const data = await response.json()
+
+      setRecentSearches(data)
+    } catch {
+      // If the back end cannot be reached, the list just stays the same
+    }
+  }
+
   // Show the full results for a search, but only if it is not empty
   function showSearchResults(text) {
     if (text.trim() === '') {
       return
     }
 
-    // Put this search at the top of the list, without repeating it
-    const updatedSearches = [text]
-
-    for (const oldSearch of recentSearches) {
-      if (oldSearch !== text) {
-        updatedSearches.push(oldSearch)
-      }
-    }
-
-    savedSearches = updatedSearches
-    setRecentSearches(updatedSearches)
+    saveSearch(text)
     setSearch(text)
     setShowResults(true)
   }

@@ -1,6 +1,6 @@
 import './RecentSearches.css'
 
-// Searches the user made earlier in this visit (#48)
+// Searches made earlier, which the back end remembers (#48)
 function RecentSearches({ searches, onSelect }) {
   // Show nothing if there are no earlier searches
   if (searches.length === 0) {
