@@ -18,4 +18,15 @@ describe('The back end', function () {
     expect(response.status).to.equal(404)
     expect(response.body.error).to.equal('This address does not exist.')
   })
+
+  it('answers with a short message for unreadable data', async function () {
+    // Send broken JSON, like a form that was cut off halfway
+    const response = await request(app)
+      .post('/api/search')
+      .set('Content-Type', 'application/json')
+      .send('{ "search": ')
+
+    expect(response.status).to.equal(400)
+    expect(response.body.error).to.equal('Something went wrong.')
+  })
 })
