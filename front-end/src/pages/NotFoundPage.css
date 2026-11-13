@@ -1,0 +1,38 @@
+.not-found {
+  width: 100%;
+  max-width: 640px;
+  margin-inline: auto;
+  padding: 24px 16px;
+  box-sizing: border-box;
+  color: var(--app-text);
+}
+
+.not-found__title {
+  margin: 0 0 16px;
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 700;
+}
+
+.not-found__text {
+  margin-bottom: 24px;
+  color: var(--app-muted);
+}
+
+/* The same blue button as "Report a barrier" on Home */
+.not-found__button {
+  display: block;
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-align: center;
+  color: #ffffff;
+  background: var(--app-primary);
+  text-decoration: none;
+}
+
+.not-found__link {
+  font-weight: 600;
+  color: var(--app-primary);
+}

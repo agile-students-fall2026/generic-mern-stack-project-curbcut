@@ -43,4 +43,26 @@ app.use('/api', function (request, response) {
   response.status(404).json({ error: 'This address does not exist.' })
 })
 
+// If something goes wrong in a route, answer with a short message instead of
+// a long error page. Express knows this is the error handler because it takes
+// four things: the error, the request, the response and next.
+function handleError(error, request, response, next) {
+  // Some errors come with their own number, like 400 for unreadable data.
+  // Anything else is our fault, so it is 500.
+  let status = 500
+
+  if (error.status) {
+    status = error.status
+  }
+
+  // Print our own mistakes in the terminal, so we can fix them
+  if (status === 500) {
+    console.error(error)
+  }
+
+  response.status(status).json({ error: 'Something went wrong.' })
+}
+
+app.use(handleError)
+
 export default app
