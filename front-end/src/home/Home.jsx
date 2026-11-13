@@ -9,18 +9,41 @@ import './Home.css'
 function Home() {
   // Abdullah's shared list of reports (#65)
   const { reports, loading } = useReports()
+  // The entrances and floors, so each card can show where its report is
   const [locations, setLocations] = useState([])
 
-  // Load the entrances and floors once, so each card can show its location
+  // When the page opens, ask the back end for the entrances and floors
   useEffect(() => {
-    fetch('/data/locations.json')
-      .then((response) => response.json())
-      .then((data) => setLocations(data))
-      .catch(() => setLocations([]))
+    async function loadLocations() {
+      try {
+        const response = await fetch('/api/locations')
+        const data = await response.json()
+
+        setLocations(data)
+      } catch {
+        // If the back end cannot be reached, the cards say "Unknown location"
+      }
+    }
+
+    loadLocations()
   }, [])
 
   // The 4 most recently updated reports
-  const recentReports = sortNewestFirst(reports).slice(0, 4)
+  const newestReports = sortNewestFirst(reports)
+  const recentReports = []
+
+  for (const report of newestReports) {
+    if (recentReports.length < 4) {
+      recentReports.push(report)
+    }
+  }
+
+  // Say there are no reports, but only once they have finished loading
+  let showNoReports = false
+
+  if (!loading && recentReports.length === 0) {
+    showNoReports = true
+  }
 
   return (
     <main className="home">
@@ -48,7 +71,7 @@ function Home() {
         </Link>
       </div>
 
-      {!loading && recentReports.length === 0 && (
+      {showNoReports && (
         <p className="home__empty">
           No reports have been posted yet. This does not mean there are no
           barriers.
