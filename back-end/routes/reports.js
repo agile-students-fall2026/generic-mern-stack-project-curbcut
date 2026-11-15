@@ -1,7 +1,11 @@
 import express from 'express'
+import readData from '../data/readData.js'
 
-// Abdullah's routes: GET /api/reports and POST /api/reports
-// Add the routes to this router. app.js already sends /api/reports here.
 const router = express.Router()
+
+router.get('/', function (request, response) {
+  const reports = readData('reports.json')
+  response.json(reports)
+})
 
 export default router
