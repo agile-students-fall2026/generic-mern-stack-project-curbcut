@@ -14,6 +14,16 @@ function validateUpdate({ choice, note, photo }) {
     errors.photo = 'Add a photo showing the cleared location.'
   }
 
+  const file = photo?.file
+
+  if (file) {
+    if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+      errors.photo = 'Choose a JPEG or PNG image.'
+    } else if (file.size === 0 || file.size > 5_000_000) {
+      errors.photo = 'Choose a nonempty image no larger than 5 MB.'
+    }
+  }
+
   return errors
 }
 

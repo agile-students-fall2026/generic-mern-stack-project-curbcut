@@ -96,7 +96,8 @@
   margin: 24px 0;
 }
 
-.report-details__actions button {
+.report-details__actions button,
+.report-details__confirmation button {
   min-height: 44px;
   padding: 10px 16px;
   border: 1px solid var(--app-primary);
@@ -128,4 +129,17 @@
 
 .report-details__history time {
   color: var(--app-muted);
+}
+
+.report-details__confirmation {
+  scroll-margin-top: 72px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid var(--app-success);
+  border-radius: 8px;
 }

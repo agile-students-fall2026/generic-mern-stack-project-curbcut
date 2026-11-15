@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import ReportsContext from './ReportsContext'
 import validateReport from '../reporting/validateReport'
+import validateUpdate from './validateUpdate'
 
 function ReportsProvider({ children }) {
   const [reports, setReports] = useState([])
@@ -149,6 +150,85 @@ function ReportsProvider({ children }) {
     }
   }
 
+  async function submitUpdate(reportId, values, { forceFailure = false } = {}) {
+    if (loading || error) {
+      throw new Error('Reports are unavailable. Load the sample reports first.')
+    }
+
+    if (submittingRef.current) {
+      throw new Error('A submission is already in progress.')
+    }
+
+    if (!reports.some((report) => report.id === reportId)) {
+      throw new Error('This report is no longer available.')
+    }
+
+    const validationErrors = validateUpdate(values)
+
+    if (Object.keys(validationErrors).length > 0) {
+      throw new Error('Correct the update fields before posting.')
+    }
+
+    const choice = values.choice
+    const note = values.note.trim()
+    const photoFile = values.photo?.file
+    submittingRef.current = true
+
+    try {
+      await new Promise((resolve) => setTimeout(resolve, 700))
+
+      if (!mountedRef.current) {
+        throw new Error('The reporting session has ended.')
+      }
+
+      if (import.meta.env.DEV && forceFailure) {
+        throw new Error('Simulated update failure. Please try again.')
+      }
+
+      let photo = null
+
+      if (photoFile) {
+        const url = URL.createObjectURL(photoFile)
+        photoUrlsRef.current.push(url)
+        photo = { url, alt: 'Evidence attached to this update' }
+      }
+
+      const update = {
+        id: crypto.randomUUID(),
+        reportId,
+        choice,
+        note,
+        createdAt: new Date().toISOString(),
+        photo,
+      }
+
+      setReports((previous) =>
+        previous.map((report) => {
+          if (report.id === reportId) {
+            let status = 'Active'
+
+            if (choice === "It's cleared") {
+              status = 'Resolved'
+            }
+
+            return {
+              ...report,
+              status,
+              updatedAt: update.createdAt,
+              updates: [...(report.updates || []), update],
+            }
+          }
+
+          return report
+        }),
+      )
+
+      return update
+    } finally {
+      submittingRef.current = false
+    }
+  }
+
   return (
     <ReportsContext.Provider
       value={{
@@ -157,6 +237,7 @@ function ReportsProvider({ children }) {
         error,
         retryLoad,
         submitReport,
+        submitUpdate,
       }}
     >
       {children}
