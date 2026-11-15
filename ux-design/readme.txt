@@ -10,3 +10,6 @@ Export provenance, October 23, 2026:
 - The editable source is the linked team Figma file; a new .fig source export is not included.
 
 prototype/ remains available for any future prototype exports. The current clickable prototype is hosted in the linked Figma file.
+
+Sprint 1 revision, November 14, 2026 (#102):
+- M10–M12 were revised locally in wireframes.drawio with matching PNGs. The linked Figma source and prototype still show the earlier versions.
