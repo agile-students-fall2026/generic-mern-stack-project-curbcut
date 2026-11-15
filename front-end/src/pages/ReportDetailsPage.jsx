@@ -7,6 +7,17 @@ import './ReportDetailsPage.css'
 function ReportDetails({ report, locationName, locationHref }) {
   const [updateChoice, setUpdateChoice] = useState(null)
   const triggerRef = useRef(null)
+  const [updatePosted, setUpdatePosted] = useState(false)
+  const confirmationRef = useRef(null)
+
+  useEffect(() => {
+    if (updatePosted) {
+      confirmationRef.current.focus()
+      confirmationRef.current.scrollIntoView({ block: 'start' })
+    } else if (updateChoice === null && triggerRef.current) {
+      triggerRef.current.focus()
+    }
+  }, [updateChoice, updatePosted])
 
   const updates = [...(report.updates || [])].sort(
     (first, second) => new Date(second.createdAt) - new Date(first.createdAt),
@@ -14,17 +25,39 @@ function ReportDetails({ report, locationName, locationHref }) {
   const description = report.description?.trim() || 'No description provided.'
 
   function openUpdate(event, choice) {
+    setUpdatePosted(false)
     triggerRef.current = event.currentTarget
     setUpdateChoice(choice)
   }
 
   function cancelUpdate() {
     setUpdateChoice(null)
-    triggerRef.current.focus()
+  }
+
+  function finishUpdate() {
+    setUpdateChoice(null)
+    setUpdatePosted(true)
+  }
+
+  function dismissConfirmation() {
+    setUpdatePosted(false)
   }
 
   return (
     <>
+      {updatePosted && (
+        <div
+          className="report-details__confirmation"
+          role="status"
+          ref={confirmationRef}
+          tabIndex={-1}
+        >
+          <strong>Update posted.</strong>
+          <button type="button" onClick={dismissConfirmation}>
+            Dismiss
+          </button>
+        </div>
+      )}
       <p>Community report</p>
       <h1>{report.title || `${report.category} — ${locationName}`}</h1>
       <Link className="report-details__location" to={locationHref}>
@@ -54,17 +87,23 @@ function ReportDetails({ report, locationName, locationHref }) {
         </div>
       </dl>
       <div className="report-details__actions">
-        <button type="button" onClick={(event) => openUpdate(event, '')}>
+        <button
+          type="button"
+          disabled={updateChoice !== null}
+          onClick={(event) => openUpdate(event, '')}
+        >
           Add an update
         </button>
         <button
           type="button"
+          disabled={updateChoice !== null}
           onClick={(event) => openUpdate(event, 'Still there')}
         >
           Still there
         </button>
         <button
           type="button"
+          disabled={updateChoice !== null}
           onClick={(event) => openUpdate(event, "It's cleared")}
         >
           It's cleared
@@ -77,6 +116,7 @@ function ReportDetails({ report, locationName, locationHref }) {
           locationName={locationName}
           initialChoice={updateChoice}
           onCancel={cancelUpdate}
+          onSuccess={finishUpdate}
         />
       )}
       <h2>Report history</h2>
