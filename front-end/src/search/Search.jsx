@@ -4,6 +4,7 @@ import SearchSuggestions from './SearchSuggestions'
 import SearchResults from './SearchResults'
 import RecentSearches from './RecentSearches'
 import sortNewestFirst from '../reports/sortNewestFirst'
+import getVisitorId from './getVisitorId'
 import './Search.css'
 
 // The Search screen (M03 to M07)
@@ -23,25 +24,46 @@ function Search() {
   const [locations, setLocations] = useState([])
   const [error, setError] = useState('')
 
-  // When the page opens, ask the back end for the recent searches, the
-  // supported buildings, and the entrances and floors
+  // When the page opens, ask the back end for this browser's recent searches
+  useEffect(() => {
+    async function loadRecentSearches() {
+      try {
+        const address = '/api/recent-searches?visitorId=' + getVisitorId()
+        const response = await fetch(address)
+
+        // Only use the answer if it worked, otherwise keep the empty list
+        if (response.ok) {
+          const data = await response.json()
+
+          setRecentSearches(data)
+        }
+      } catch {
+        // If the back end cannot be reached, there are no recent searches
+      }
+    }
+
+    loadRecentSearches()
+  }, [])
+
+  // When the page opens, ask the back end for the supported buildings and
+  // for the entrances and floors
   useEffect(() => {
     async function loadStartScreen() {
       try {
-        const recentResponse = await fetch('/api/recent-searches')
-        const recentData = await recentResponse.json()
-
-        setRecentSearches(recentData)
-
         // A search with nothing typed sends back every supported building
         const searchResponse = await fetch('/api/search?q=')
-        const searchData = await searchResponse.json()
-
-        setSupportedBuildings(searchData.buildings)
-
         const locationsResponse = await fetch('/api/locations')
+
+        // A failed answer does not have buildings or locations in it
+        if (!searchResponse.ok || !locationsResponse.ok) {
+          setError('Buildings could not be loaded. Please refresh.')
+          return
+        }
+
+        const searchData = await searchResponse.json()
         const locationsData = await locationsResponse.json()
 
+        setSupportedBuildings(searchData.buildings)
         setLocations(locationsData)
       } catch {
         setError('Buildings could not be loaded. Please refresh.')
@@ -53,13 +75,29 @@ function Search() {
 
   // Every time the search box changes, ask the back end what matches
   useEffect(() => {
+    // Becomes true once the user types something newer. Then this answer is
+    // old, so it is skipped even if it arrives late.
+    let isOld = false
+
     async function loadMatches() {
       try {
         // The address to ask, like /api/search?q=ramp.
         // encodeURIComponent makes symbols like & and # safe in the address.
         const address = '/api/search?q=' + encodeURIComponent(search)
         const response = await fetch(address)
+
+        // A failed answer does not have results in it
+        if (!response.ok) {
+          setError('Results could not be loaded. Please refresh.')
+          return
+        }
+
         const data = await response.json()
+
+        // Skip this answer if the user has typed something newer since
+        if (isOld) {
+          return
+        }
 
         setMatchingBuildings(data.buildings)
         setMatchingReports(sortNewestFirst(data.reports))
@@ -71,6 +109,12 @@ function Search() {
     // Only ask when something has been typed
     if (search.trim() !== '') {
       loadMatches()
+    }
+
+    // React runs this when the search changes again, which makes this
+    // answer old
+    return () => {
+      isOld = true
     }
   }, [search])
 
@@ -88,12 +132,17 @@ function Search() {
         method: 'POST',
         // Tells the back end that what we send is JSON
         headers: { 'Content-Type': 'application/json' },
-        // The search itself, like { "search": "ramp" }
-        body: JSON.stringify({ search: text }),
+        // This browser's id and the search, like
+        // { "visitorId": "a1b2c3", "search": "ramp" }
+        body: JSON.stringify({ visitorId: getVisitorId(), search: text }),
       })
-      const data = await response.json()
 
-      setRecentSearches(data)
+      // Only use the answer if it worked, otherwise keep the old list
+      if (response.ok) {
+        const data = await response.json()
+
+        setRecentSearches(data)
+      }
     } catch {
       // If the back end cannot be reached, the list just stays the same
     }
