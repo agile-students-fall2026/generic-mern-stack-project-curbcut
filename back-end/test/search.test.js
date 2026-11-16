@@ -39,6 +39,13 @@ describe('GET /api/search', function () {
     expect(response.body.reports.length).to.equal(0)
   })
 
+  it('does not break when the search is sent twice', async function () {
+    // ?q=a&q=b sends a list instead of text, so it is treated as empty
+    const response = await request(app).get('/api/search?q=a&q=b')
+
+    expect(response.status).to.equal(200)
+  })
+
   it('sends every supported building when nothing was typed', async function () {
     const response = await request(app).get('/api/search')
 

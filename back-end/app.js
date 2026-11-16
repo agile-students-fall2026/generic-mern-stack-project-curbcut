@@ -3,6 +3,7 @@ import express from 'express'
 // Each teammate's routes are in their own file in the routes folder
 import locationsRouter from './routes/locations.js'
 import searchRouter from './routes/search.js'
+import recentSearchesRouter from './routes/recentSearches.js'
 import reportsRouter from './routes/reports.js'
 import buildingsRouter from './routes/buildings.js'
 import reportDetailsRouter from './routes/reportDetails.js'
@@ -26,6 +27,7 @@ app.get('/api', function (request, response) {
 // Gillani
 app.use('/api/locations', locationsRouter)
 app.use('/api/search', searchRouter)
+app.use('/api/recent-searches', recentSearchesRouter)
 
 // Abdullah
 app.use('/api/reports', reportsRouter)

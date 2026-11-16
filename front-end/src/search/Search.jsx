@@ -4,12 +4,9 @@ import SearchSuggestions from './SearchSuggestions'
 import SearchResults from './SearchResults'
 import RecentSearches from './RecentSearches'
 import sortNewestFirst from '../reports/sortNewestFirst'
+import getVisitorId from './getVisitorId'
 import useReports from '../reports/useReports'
 import './Search.css'
-
-// Earlier searches are kept out here so they stay while moving between pages.
-// They are cleared when the page is refreshed.
-let savedSearches = []
 
 // The Search screen (M03 to M07)
 function Search() {
@@ -18,8 +15,8 @@ function Search() {
   const [search, setSearch] = useState('')
   // Becomes true when the user presses Enter or "See all results"
   const [showResults, setShowResults] = useState(false)
-  // Searches made earlier in this visit, newest first
-  const [recentSearches, setRecentSearches] = useState(savedSearches)
+  // Searches made earlier, newest first. They are saved on the back end.
+  const [recentSearches, setRecentSearches] = useState([])
   // The buildings CurbCut covers right now
   const [supportedBuildings, setSupportedBuildings] = useState([])
   // The buildings and reports that match what the user typed
@@ -29,38 +26,80 @@ function Search() {
   const [locations, setLocations] = useState([])
   const [error, setError] = useState('')
 
+  // When the page opens, ask the back end for this browser's recent searches
+  useEffect(() => {
+    async function loadRecentSearches() {
+      try {
+        const address = '/api/recent-searches?visitorId=' + getVisitorId()
+        const response = await fetch(address)
+
+        // Only use the answer if it worked, otherwise keep the empty list
+        if (response.ok) {
+          const data = await response.json()
+
+          setRecentSearches(data)
+        }
+      } catch {
+        // If the back end cannot be reached, there are no recent searches
+      }
+    }
+
+    loadRecentSearches()
+  }, [])
+
   // When the page opens, ask the back end for the supported buildings and
   // for the entrances and floors
   useEffect(() => {
-    async function loadBuildingsAndLocations() {
+    async function loadStartScreen() {
       try {
         // A search with nothing typed sends back every supported building
         const searchResponse = await fetch('/api/search?q=')
-        const searchData = await searchResponse.json()
-
-        setSupportedBuildings(searchData.buildings)
-
         const locationsResponse = await fetch('/api/locations')
+
+        // A failed answer does not have buildings or locations in it
+        if (!searchResponse.ok || !locationsResponse.ok) {
+          setError('Buildings could not be loaded. Please refresh.')
+          return
+        }
+
+        const searchData = await searchResponse.json()
         const locationsData = await locationsResponse.json()
 
+        setSupportedBuildings(searchData.buildings)
         setLocations(locationsData)
       } catch {
         setError('Buildings could not be loaded. Please refresh.')
       }
     }
 
-    loadBuildingsAndLocations()
+    loadStartScreen()
   }, [])
 
   // Every time the search box changes, ask the back end what matches
   useEffect(() => {
+    // Becomes true once the user types something newer. Then this answer is
+    // old, so it is skipped even if it arrives late.
+    let isOld = false
+
     async function loadMatches() {
       try {
         // The address to ask, like /api/search?q=ramp.
         // encodeURIComponent makes symbols like & and # safe in the address.
         const address = '/api/search?q=' + encodeURIComponent(search)
         const response = await fetch(address)
+
+        // A failed answer does not have results in it
+        if (!response.ok) {
+          setError('Results could not be loaded. Please refresh.')
+          return
+        }
+
         const data = await response.json()
+
+        // Skip this answer if the user has typed something newer since
+        if (isOld) {
+          return
+        }
 
         setMatchingBuildings(data.buildings)
         setMatchingReports(data.reports)
@@ -73,6 +112,12 @@ function Search() {
     if (search.trim() !== '') {
       loadMatches()
     }
+
+    // React runs this when the search changes again, which makes this
+    // answer old
+    return () => {
+      isOld = true
+    }
   }, [search])
 
   // Typing goes back to the suggestions
@@ -81,23 +126,37 @@ function Search() {
     setShowResults(false)
   }
 
+  // Send a search to the back end, which saves it and sends back the new list
+  async function saveSearch(text) {
+    try {
+      const response = await fetch('/api/recent-searches', {
+        // POST means we are sending something, not just asking
+        method: 'POST',
+        // Tells the back end that what we send is JSON
+        headers: { 'Content-Type': 'application/json' },
+        // This browser's id and the search, like
+        // { "visitorId": "a1b2c3", "search": "ramp" }
+        body: JSON.stringify({ visitorId: getVisitorId(), search: text }),
+      })
+
+      // Only use the answer if it worked, otherwise keep the old list
+      if (response.ok) {
+        const data = await response.json()
+
+        setRecentSearches(data)
+      }
+    } catch {
+      // If the back end cannot be reached, the list just stays the same
+    }
+  }
+
   // Show the full results for a search, but only if it is not empty
   function showSearchResults(text) {
     if (text.trim() === '') {
       return
     }
 
-    // Put this search at the top of the list, without repeating it
-    const updatedSearches = [text]
-
-    for (const oldSearch of recentSearches) {
-      if (oldSearch !== text) {
-        updatedSearches.push(oldSearch)
-      }
-    }
-
-    savedSearches = updatedSearches
-    setRecentSearches(updatedSearches)
+    saveSearch(text)
     setSearch(text)
     setShowResults(true)
   }
