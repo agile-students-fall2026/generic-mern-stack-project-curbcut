@@ -7,6 +7,8 @@
 
 The prototype starts at Home (M01). It covers finding a building or barrier, checking entrance information, posting a report or follow-up, and browsing reports. Screen content is sample data for the Sprint 0 design; the prototype does not establish live building conditions.
 
+For the Sprint 1 M10–M12 revisions, use [wireframes.drawio](wireframes.drawio) and the PNGs below. The linked Figma source and prototype still show the earlier versions.
+
 ## App map
 
 ![CurbCut app map](app-map.png)
@@ -81,19 +83,19 @@ An entrance page shows documented step-free access, door, ramp, elevator, and op
 
 #### M10 — Report detail
 
-A report shows its location, category, status, photo placeholder, first-observed and last-updated times, description, and update history. Users can indicate whether the barrier remains or add a follow-up.
+A report shows its location, category, status, timestamps, description, and follow-up count. History shows updates newest first with their own evidence photos, followed by the original report and photo. Update buttons open the form without posting.
 
 <img src="wireframes/m10-report-detail.png" alt="M10: Report detail" width="390">
 
-#### M11 — Add update (overlay)
+#### M11 — Add update (inline form)
 
-Choose whether the barrier is still there, cleared, or changed, add a note, and post the update. Cancel closes the panel without posting.
+Choose whether the barrier is still there, cleared, or changed, and enter a required note. Clearance also requires a photo, with preview, replacement, removal, and missing-field feedback. Cancel closes the form without posting.
 
-<img src="wireframes/m11-add-update.png" alt="M11: Add update (overlay)" width="390">
+<img src="wireframes/m11-add-update.png" alt="M11: Add update (inline form)" width="390">
 
 #### M12 — Report detail — update posted
 
-A confirmation banner acknowledges the posted update. The report shows the new update in its history and an increased follow-up count.
+A dismissible confirmation acknowledges the update. The new entry and photo appear first, with an increased count and updated time and status. Earlier history remains intact.
 
 <img src="wireframes/m12-report-update-posted.png" alt="M12: Report detail — update posted" width="390">
 

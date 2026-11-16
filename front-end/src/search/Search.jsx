@@ -5,10 +5,12 @@ import SearchResults from './SearchResults'
 import RecentSearches from './RecentSearches'
 import sortNewestFirst from '../reports/sortNewestFirst'
 import getVisitorId from './getVisitorId'
+import useReports from '../reports/useReports'
 import './Search.css'
 
 // The Search screen (M03 to M07)
 function Search() {
+  const { reports } = useReports()
   // What the user has typed in the search box
   const [search, setSearch] = useState('')
   // Becomes true when the user presses Enter or "See all results"
@@ -100,7 +102,7 @@ function Search() {
         }
 
         setMatchingBuildings(data.buildings)
-        setMatchingReports(sortNewestFirst(data.reports))
+        setMatchingReports(data.reports)
       } catch {
         setError('Results could not be loaded. Please refresh.')
       }
@@ -189,6 +191,17 @@ function Search() {
     screen = 'results'
   }
 
+  const currentReports = matchingReports.map((result) => {
+    const sharedReport = reports.find((report) => report.id === result.id)
+
+    if (sharedReport) {
+      return sharedReport
+    }
+
+    return result
+  })
+  const sortedReports = sortNewestFirst(currentReports)
+
   return (
     <main className="search">
       <h1 className="search__title">Search</h1>
@@ -251,7 +264,7 @@ function Search() {
       {screen === 'suggestions' && (
         <SearchSuggestions
           buildings={matchingBuildings}
-          reports={matchingReports}
+          reports={sortedReports}
           onSeeAll={seeAllResults}
           onCancel={clearSearch}
         />
@@ -262,7 +275,7 @@ function Search() {
         <SearchResults
           search={search}
           buildings={matchingBuildings}
-          reports={matchingReports}
+          reports={sortedReports}
           locations={locations}
           onNewSearch={clearSearch}
         />

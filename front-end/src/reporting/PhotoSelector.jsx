@@ -1,6 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 
-function PhotoSelector({ photo, onChange }) {
+function PhotoSelector({
+  photo,
+  onChange,
+  required = false,
+  validationError = '',
+}) {
   const inputRef = useRef(null)
   const [error, setError] = useState('')
   const photoUrl = photo?.url
@@ -57,7 +62,7 @@ function PhotoSelector({ photo, onChange }) {
   return (
     <div className="reporting__field">
       <p id="photo-label" className="reporting__label">
-        Photo (optional)
+        {required ? 'Photo (required for clearance)' : 'Photo (optional)'}
       </p>
 
       <input
@@ -73,6 +78,7 @@ function PhotoSelector({ photo, onChange }) {
         className="reporting__photo-picker"
         aria-labelledby="photo-label photo-action"
         aria-describedby="photo-hint photo-rules photo-error"
+        aria-invalid={Boolean(error || validationError)}
         onClick={() => inputRef.current.click()}
       >
         <span id="photo-action">
@@ -89,7 +95,7 @@ function PhotoSelector({ photo, onChange }) {
       </p>
 
       <p id="photo-error" className="reporting__error" role="alert">
-        {error}
+        {error || validationError}
       </p>
 
       {photo && (

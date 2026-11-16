@@ -1,4 +1,6 @@
 .report-details {
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
   max-width: 640px;
   margin: 0 auto;
   padding: 24px 16px;
@@ -13,7 +15,8 @@
 }
 
 .report-details__location {
-  margin-bottom: 4px;
+  display: inline-block;
+  margin-bottom: 16px;
   color: var(--app-muted);
 }
 
@@ -46,8 +49,7 @@
   color: var(--app-success);
 }
 
-.report-details__photo,
-.report-details__photo-placeholder {
+.report-details__photo {
   display: grid;
   width: 100%;
   min-height: 180px;
@@ -85,4 +87,59 @@
 .report-details__times dd {
   margin: 0;
   color: var(--app-muted);
+}
+
+.report-details__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.report-details__actions button,
+.report-details__confirmation button {
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid var(--app-primary);
+  border-radius: 8px;
+  background: var(--app-surface);
+  color: var(--app-primary);
+  font: inherit;
+  cursor: pointer;
+}
+
+.report-details__actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.report-details__history {
+  list-style: none;
+  padding: 0;
+}
+
+.report-details__history li {
+  padding: 20px 0;
+  border-top: 1px solid var(--app-divider);
+}
+
+.report-details__history h3 {
+  margin: 0 0 4px;
+}
+
+.report-details__history time {
+  color: var(--app-muted);
+}
+
+.report-details__confirmation {
+  scroll-margin-top: 72px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 16px 0;
+  padding: 16px;
+  border: 1px solid var(--app-success);
+  border-radius: 8px;
 }
