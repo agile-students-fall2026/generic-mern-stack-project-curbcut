@@ -34,7 +34,9 @@ function sendSearchResults(request, response) {
   // If nothing was typed, everything matches.
   let searchText = ''
 
-  if (request.query.q) {
+  // Only accept text. An address like ?q=a&q=b sends a list, which would
+  // break .trim()
+  if (typeof request.query.q === 'string') {
     searchText = request.query.q.trim().toLowerCase()
   }
 
