@@ -32,10 +32,9 @@ function ReportsProvider({ children }) {
 
     async function loadReports() {
       try {
-        const response = await fetch(
-          `${import.meta.env.BASE_URL}data/reports.json`,
-          { signal: controller.signal },
-        )
+        const response = await fetch('/api/reports', {
+          signal: controller.signal,
+        })
 
         if (!response.ok) {
           throw new Error('Could not load sample reports.')
