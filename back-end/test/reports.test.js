@@ -33,17 +33,58 @@ describe('GET /api/reports', function () {
     })
   })
   it('returns an empty list when no reports exist', async function () {
-  const originalText = fs.readFileSync('data/reports.json', 'utf-8')
+    const originalText = fs.readFileSync('data/reports.json', 'utf-8')
 
-  try {
-    fs.writeFileSync('data/reports.json', '[]')
+    try {
+      fs.writeFileSync('data/reports.json', '[]')
 
-    const response = await request(app).get('/api/reports')
+      const response = await request(app).get('/api/reports')
 
-    expect(response.status).to.equal(200)
-    expect(response.body).to.deep.equal([])
-  } finally {
-    fs.writeFileSync('data/reports.json', originalText)
-  }
+      expect(response.status).to.equal(200)
+      expect(response.body).to.deep.equal([])
+    } finally {
+      fs.writeFileSync('data/reports.json', originalText)
+    }
+  })
 })
+
+describe('POST /api/reports', function () {
+  it('rejects a report with a numeric description and leaves stored reports unchanged', async function () {
+    const before = fs.readFileSync('data/reports.json', 'utf-8')
+
+    const report = {
+      buildingId: 'kimmel-center',
+      entranceId: 'kimmel-main',
+      floorId: null,
+      category: 'Blocked ramp',
+      observedAt: '2026-11-01T15:00:00.000Z',
+      description: 123,
+    }
+
+    const response = await request(app).post('/api/reports').send(report)
+    const after = fs.readFileSync('data/reports.json', 'utf-8')
+
+    expect(response.status).to.equal(400)
+    expect(response.body.errors.description).to.equal(
+      'Describe the barrier in at least 10 words.'
+    )
+    expect(after).to.equal(before)
+  })
+  it('rejects a report with a missing observation time', async function () {
+    const report = {
+      buildingId: 'kimmel-center',
+      entranceId: 'kimmel-main',
+      floorId: null,
+      category: 'Blocked ramp',
+      description: 'The main entrance ramp is blocked by several large boxes.',
+    }
+
+    const response = await request(app).post('/api/reports').send(report)
+
+    expect(response.status).to.equal(400)
+    expect(response.body.errors.observedAt).to.equal(
+      'Choose a valid observation date and time.'
+    )
+  })
 })
+
