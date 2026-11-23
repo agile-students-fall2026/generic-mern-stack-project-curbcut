@@ -30,6 +30,7 @@ function BuildingDetailsPage() {
 
   return (
     <BuildingDetails
+      key={buildingId}
       buildingId={buildingId}
       reports={reports}
       getEntranceHref={getEntranceLink}

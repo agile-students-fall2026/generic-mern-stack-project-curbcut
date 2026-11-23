@@ -18,6 +18,7 @@ function EntranceDetailsPage() {
 
   return (
     <EntranceDetails
+      key={buildingId + '/' + entranceId}
       buildingId={buildingId}
       entranceId={entranceId}
       reports={reports}

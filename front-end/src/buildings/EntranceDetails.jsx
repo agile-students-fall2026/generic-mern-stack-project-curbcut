@@ -20,24 +20,30 @@ function EntranceDetails({
     async function loadEntrance() {
       try {
         const buildingResponse = await fetch(
-          `${import.meta.env.BASE_URL}data/buildings.json`,
+          `/api/buildings/${encodeURIComponent(buildingId)}`,
         )
-        const locationResponse = await fetch(
-          `${import.meta.env.BASE_URL}data/locations.json`,
-        )
+        if (buildingResponse.status === 404) {
+          if (!cancelled) {
+            setData({ building: null, locations: [] })
+            setStatus('ready')
+          }
+          return
+        }
+        const locationResponse = await fetch('/api/locations')
         if (!buildingResponse.ok || !locationResponse.ok) {
           throw new Error('Could not load entrance information')
         }
         const buildingData = await buildingResponse.json()
         const locations = await locationResponse.json()
         if (
-          !Array.isArray(buildingData.buildings) ||
+          !buildingData ||
+          buildingData.id !== buildingId ||
           !Array.isArray(locations)
         ) {
           throw new Error('Invalid entrance information')
         }
         if (!cancelled) {
-          setData({ buildings: buildingData.buildings, locations: locations })
+          setData({ building: buildingData, locations: locations })
           setStatus('ready')
         }
       } catch {
@@ -51,7 +57,7 @@ function EntranceDetails({
     return () => {
       cancelled = true
     }
-  }, [reloadCount])
+  }, [buildingId, reloadCount])
 
   function retryLoading() {
     setStatus('loading')
@@ -97,7 +103,7 @@ function EntranceDetails({
     )
   }
 
-  const building = data.buildings.find((item) => item.id === buildingId)
+  const building = data.building
   const entrance = data.locations.find(
     (location) =>
       location.buildingId === buildingId &&
