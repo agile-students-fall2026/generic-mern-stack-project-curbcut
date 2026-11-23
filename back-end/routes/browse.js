@@ -8,13 +8,29 @@ const router = express.Router()
 function sendBrowseResults(request, response) {
   const reports = readData('reports.json')
   const locations = readData('locations.json')
-  const { status, category, buildingId, building, sort = 'updated-newest', search = '', page = '1', pageSize = '10' } = request.query
+  const {
+    status,
+    category,
+    buildingId,
+    building,
+    sort = 'updated-newest',
+    search = '',
+    observationPeriod = 'any',
+    page = '1',
+    pageSize = '10',
+  } = request.query
 
   // Convert pagination values once and reject values that cannot form a page.
   const parsedPage = Number.parseInt(page, 10)
   const parsedPageSize = Number.parseInt(pageSize, 10)
 
-  if (Number.isNaN(parsedPage) || parsedPage < 1 || Number.isNaN(parsedPageSize) || parsedPageSize < 1 || parsedPageSize > 100) {
+  if (
+    Number.isNaN(parsedPage) ||
+    parsedPage < 1 ||
+    Number.isNaN(parsedPageSize) ||
+    parsedPageSize < 1 ||
+    parsedPageSize > 100
+  ) {
     response.status(400).json({ error: 'Invalid pagination options.' })
     return
   }
@@ -22,6 +38,27 @@ function sendBrowseResults(request, response) {
   // Accept buildingId for the frontend and building for shorter API queries.
   const selectedBuilding = buildingId || building || ''
   const searchText = typeof search === 'string' ? search.trim().toLowerCase() : ''
+
+  // Determine the oldest observation date allowed by the period filter.
+  let observationStart = null
+  if (observationPeriod === 'today') {
+    const today = new Date()
+    observationStart = new Date(today.getFullYear(), today.getMonth(), today.getDate())
+  } else if (observationPeriod === 'past-week') {
+    observationStart = new Date()
+    observationStart.setDate(observationStart.getDate() - 7)
+  } else if (observationPeriod === 'past-month') {
+    observationStart = new Date()
+    const dayOfMonth = observationStart.getDate()
+    observationStart.setDate(1)
+    observationStart.setMonth(observationStart.getMonth() - 1)
+    const lastDayOfPreviousMonth = new Date(
+      observationStart.getFullYear(),
+      observationStart.getMonth() + 1,
+      0,
+    ).getDate()
+    observationStart.setDate(Math.min(dayOfMonth, lastDayOfPreviousMonth))
+  }
 
   // Apply every requested filter before sorting or slicing the result.
   const matchingReports = reports.filter((report) => {
@@ -43,7 +80,8 @@ function sendBrowseResults(request, response) {
       (!status || status === 'All' || report.status === status) &&
       (!category || category === 'All' || report.category === category) &&
       (!selectedBuilding || report.buildingId === selectedBuilding) &&
-      (!searchText || searchableText.includes(searchText))
+      (!searchText || searchableText.includes(searchText)) &&
+      (!observationStart || new Date(report.observedAt) >= observationStart)
     )
   })
 
@@ -54,7 +92,8 @@ function sendBrowseResults(request, response) {
     'observed-newest': ['observedAt', 'desc'],
     'observed-oldest': ['observedAt', 'asc'],
   }
-  const [sortField, sortDirection] = sortDirections[sort] || sortDirections['updated-newest']
+  const [sortField, sortDirection] =
+    sortDirections[sort] || sortDirections['updated-newest']
 
   matchingReports.sort((first, second) => {
     const difference = new Date(second[sortField]) - new Date(first[sortField])

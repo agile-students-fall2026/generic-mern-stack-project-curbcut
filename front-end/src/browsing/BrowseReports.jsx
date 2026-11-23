@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import ReportCard from '../components/ReportCard'
-import useReports from '../reports/useReports'
-import getReportSearchText from '../reports/getReportSearchText'
 import './BrowseReports.css'
 
 const PAGE_SIZE = 10
@@ -13,16 +11,20 @@ const DEFAULT_FILTERS = {
 }
 
 function BrowseReports() {
-  // Use the same report list as Home and Search.
-  const { reports, loading, error, retryLoad } = useReports()
   const [locations, setLocations] = useState([])
   const [locationsError, setLocationsError] = useState('')
+  const [reports, setReports] = useState([])
+  const [categories, setCategories] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [loadAttempt, setLoadAttempt] = useState(0)
+  const [total, setTotal] = useState(0)
+  const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('All')
   const [filters, setFilters] = useState(DEFAULT_FILTERS)
   const [draftFilters, setDraftFilters] = useState(DEFAULT_FILTERS)
-  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE)
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
   const filtersDialog = useRef(null)
   const buildingId = searchParams.get('buildingId') || ''
 
@@ -63,65 +65,60 @@ function BrowseReports() {
     return () => controller.abort()
   }, [])
 
-  const searchTerm = search.trim().toLowerCase()
-  const categories = [
-    ...new Set(reports.map((report) => report.category)),
-  ].sort()
-  const now = new Date()
+  useEffect(() => {
+    const controller = new AbortController()
 
-  function matchesConditions(report, selectedFilters) {
-    // Includes the building and entrance or floor names, so "Kimmel Center" works
-    const searchableText = getReportSearchText(report, locations)
-    const observedAt = new Date(report.observedAt)
-    let observationStart = null
+    async function loadReports() {
+      setLoading(true)
+      setError('')
 
-    if (selectedFilters.observationPeriod === 'today') {
-      observationStart = new Date(
-        now.getFullYear(),
-        now.getMonth(),
-        now.getDate(),
-      )
-    } else if (selectedFilters.observationPeriod === 'past-week') {
-      observationStart = new Date(now)
-      observationStart.setDate(observationStart.getDate() - 7)
-    } else if (selectedFilters.observationPeriod === 'past-month') {
-      observationStart = new Date(now)
-      const dayOfMonth = observationStart.getDate()
-      observationStart.setDate(1)
-      observationStart.setMonth(observationStart.getMonth() - 1)
-      const lastDayOfPreviousMonth = new Date(
-        observationStart.getFullYear(),
-        observationStart.getMonth() + 1,
-        0,
-      ).getDate()
-      observationStart.setDate(Math.min(dayOfMonth, lastDayOfPreviousMonth))
+      const query = new URLSearchParams({
+        status,
+        category: filters.category,
+        buildingId,
+        sort: filters.sort,
+        search,
+        observationPeriod: filters.observationPeriod,
+        page: String(page),
+        pageSize: String(PAGE_SIZE),
+      })
+
+      try {
+        const response = await fetch(`/api/browse?${query}`, {
+          signal: controller.signal,
+        })
+
+        if (!response.ok) {
+          throw new Error('Reports could not be loaded.')
+        }
+
+        const data = await response.json()
+
+        if (!Array.isArray(data.reports)) {
+          throw new Error('The browse report data is invalid.')
+        }
+
+        if (!controller.signal.aborted) {
+          setReports((previous) =>
+            page === 1 ? data.reports : [...previous, ...data.reports],
+          )
+          setCategories(Array.isArray(data.categories) ? data.categories : [])
+          setTotal(data.pagination?.total || 0)
+          setLoading(false)
+        }
+      } catch (loadError) {
+        if (!controller.signal.aborted) {
+          setError(loadError.message)
+          setLoading(false)
+        }
+      }
     }
 
-    return (
-      (searchTerm === '' || searchableText.includes(searchTerm)) &&
-      (status === 'All' || report.status === status) &&
-      (!buildingId || report.buildingId === buildingId) &&
-      (selectedFilters.category === 'All' ||
-        report.category === selectedFilters.category) &&
-      (!observationStart || observedAt >= observationStart)
-    )
-  }
+    loadReports()
 
-  const matchingReports = reports.filter((report) =>
-    matchesConditions(report, filters),
-  )
-  const draftMatchingCount = reports.filter((report) =>
-    matchesConditions(report, draftFilters),
-  ).length
+    return () => controller.abort()
+  }, [buildingId, filters, loadAttempt, page, search, status])
 
-  const sortedReports = [...matchingReports].sort((first, second) => {
-    const [field, direction] = filters.sort.split('-')
-    const timestampField = field === 'observed' ? 'observedAt' : 'updatedAt'
-    const difference =
-      new Date(second[timestampField]) - new Date(first[timestampField])
-    return direction === 'newest' ? difference : -difference
-  })
-  const visibleReports = sortedReports.slice(0, visibleCount)
   const buildingName = locations.find(
     (location) => location.buildingId === buildingId,
   )?.buildingName
@@ -134,18 +131,46 @@ function BrowseReports() {
   function applyFilters(event) {
     event.preventDefault()
     setFilters(draftFilters)
-    setVisibleCount(PAGE_SIZE)
+    setReports([])
+    setPage(1)
     filtersDialog.current?.close()
   }
 
   function resetFilters() {
     setDraftFilters({
-      ...draftFilters,
       category: 'All',
       observationPeriod: 'any',
       sort: 'updated-newest',
     })
   }
+
+  function clearAll() {
+    setSearch('')
+    setStatus('All')
+    setFilters(DEFAULT_FILTERS)
+    setDraftFilters(DEFAULT_FILTERS)
+    setReports([])
+    setPage(1)
+
+    if (buildingId) {
+      setSearchParams((previous) => {
+        const next = new URLSearchParams(previous)
+        next.delete('buildingId')
+        return next
+      })
+    }
+  }
+
+  function retryLoad() {
+    setLoadAttempt((attempt) => attempt + 1)
+  }
+
+  const hasActiveFilters =
+    search.trim() !== '' ||
+    status !== 'All' ||
+    buildingId !== '' ||
+    filters.category !== 'All' ||
+    filters.observationPeriod !== 'any'
 
   return (
     <main className="browse-reports">
@@ -170,7 +195,7 @@ function BrowseReports() {
             value={search}
             onChange={(event) => {
               setSearch(event.target.value)
-              setVisibleCount(PAGE_SIZE)
+              setPage(1)
             }}
           />
         </div>
@@ -197,7 +222,7 @@ function BrowseReports() {
             aria-pressed={status === option}
             onClick={() => {
               setStatus(option)
-              setVisibleCount(PAGE_SIZE)
+              setPage(1)
             }}
           >
             {option}
@@ -283,8 +308,7 @@ function BrowseReports() {
               Cancel
             </button>
             <button type="submit">
-              Show {draftMatchingCount}{' '}
-              {draftMatchingCount === 1 ? 'report' : 'reports'}
+              Apply filters
             </button>
           </div>
         </form>
@@ -313,10 +337,8 @@ function BrowseReports() {
       ) : error === '' ? (
         <>
           <p className="browse-reports__count" aria-live="polite">
-            {matchingReports.length}{' '}
-            {matchingReports.length === 1
-              ? 'matching report'
-              : 'matching reports'}
+            {total}{' '}
+            {total === 1 ? 'matching report' : 'matching reports'}
             {' · Sorted by '}
             {filters.sort.startsWith('updated')
               ? 'last updated'
@@ -326,16 +348,27 @@ function BrowseReports() {
               : ', oldest first'}
           </p>
 
-          {matchingReports.length === 0 ? (
-            <p className="browse-reports__empty">
-              {reports.length === 0
-                ? 'No reports have been posted yet.'
-                : 'No reports match these search and filter choices. This does not mean there are no barriers.'}
-            </p>
+          {reports.length === 0 ? (
+            <>
+              <p className="browse-reports__empty">
+                {hasActiveFilters
+                  ? 'No reports match these search and filter choices. This does not mean there are no barriers.'
+                  : 'No reports have been posted yet.'}
+              </p>
+              {hasActiveFilters && (
+                <button
+                  className="browse-reports__load-more"
+                  type="button"
+                  onClick={clearAll}
+                >
+                  Clear filters
+                </button>
+              )}
+            </>
           ) : (
             <section className="browse-reports__list" aria-label="Reports">
               {/* The shared card also links each result to its detail page. */}
-              {visibleReports.map((report) => (
+              {reports.map((report) => (
                 <ReportCard
                   key={report.id}
                   report={report}
@@ -344,11 +377,11 @@ function BrowseReports() {
               ))}
             </section>
           )}
-          {visibleCount < matchingReports.length && (
+          {reports.length < total && (
             <button
               className="browse-reports__load-more"
               type="button"
-              onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}
+              onClick={() => setPage((current) => current + 1)}
             >
               Load more reports
             </button>
