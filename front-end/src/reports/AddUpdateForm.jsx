@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import PhotoSelector from '../reporting/PhotoSelector'
 import validateUpdate from './validateUpdate'
-import useReports from './useReports'
 import '../reporting/ReportForm.css'
 
 function AddUpdateForm({
@@ -11,14 +10,12 @@ function AddUpdateForm({
   onCancel,
   onSuccess,
 }) {
-  const { submitUpdate } = useReports()
   const [choice, setChoice] = useState(initialChoice)
   const [note, setNote] = useState('')
   const [photo, setPhoto] = useState(null)
   const [errors, setErrors] = useState({})
   const [submissionError, setSubmissionError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [forceFailure, setForceFailure] = useState(false)
   const submissionLock = useRef(false)
   const mountedRef = useRef(false)
   const headingRef = useRef(null)
@@ -48,6 +45,9 @@ function AddUpdateForm({
 
     const values = { choice, note, photo }
     const nextErrors = validateUpdate(values)
+    if (photo?.file || choice === "It's cleared") {
+      nextErrors.photo = 'Photo updates and clearance are not available yet.'
+    }
     setErrors(nextErrors)
     setSubmissionError('')
 
@@ -59,10 +59,28 @@ function AddUpdateForm({
     setIsSubmitting(true)
 
     try {
-      await submitUpdate(report.id, values, { forceFailure })
+      const response = await fetch(
+        `/api/reports/${encodeURIComponent(report.id)}/updates`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ choice, note: note.trim() }),
+        },
+      )
+      const data = await response.json()
+
+      if (!response.ok) {
+        if (data.errors) {
+          if (mountedRef.current) {
+            setErrors(data.errors)
+          }
+          return
+        }
+        throw new Error(data.error || 'Could not post your update. Try again.')
+      }
 
       if (mountedRef.current) {
-        onSuccess()
+        onSuccess(data)
       }
     } catch (error) {
       if (mountedRef.current) {
@@ -158,20 +176,9 @@ function AddUpdateForm({
             required={choice === "It's cleared"}
             validationError={errors.photo}
           />
-          {import.meta.env.DEV && (
-            <p className="reporting__field">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={forceFailure}
-                  onChange={(event) => setForceFailure(event.target.checked)}
-                />{' '}
-                Simulate update failure
-              </label>
-            </p>
-          )}
           <p className="reporting__hint">
-            Updates are kept for this visit and reset on refresh.
+            Text updates are saved and remain after refresh. Photo updates and
+            clearance are not available yet.
           </p>
           <div className="reporting__actions">
             <button

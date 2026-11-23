@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import useReports from '../reports/useReports'
 import AddUpdateForm from '../reports/AddUpdateForm'
 import './ReportDetailsPage.css'
 
-function ReportDetails({ report, locationName, locationHref }) {
+function ReportDetails({ report, locationName, locationHref, onUpdate }) {
   const [updateChoice, setUpdateChoice] = useState(null)
   const triggerRef = useRef(null)
   const [updatePosted, setUpdatePosted] = useState(false)
@@ -34,7 +33,8 @@ function ReportDetails({ report, locationName, locationHref }) {
     setUpdateChoice(null)
   }
 
-  function finishUpdate() {
+  function finishUpdate(updatedReport) {
+    onUpdate(updatedReport)
     setUpdateChoice(null)
     setUpdatePosted(true)
   }
@@ -120,6 +120,7 @@ function ReportDetails({ report, locationName, locationHref }) {
         />
       )}
       <h2>Report history</h2>
+      {updates.length === 0 && <p>No follow-up updates yet.</p>}
       <ol className="report-details__history">
         {updates.map((update) => (
           <li key={update.id}>
@@ -156,41 +157,72 @@ function ReportDetails({ report, locationName, locationHref }) {
   )
 }
 
-function ReportDetailsPage() {
-  const { reportId } = useParams()
-  const { reports, loading, error, retryLoad } = useReports()
+function ReportDetailsLoader({ reportId }) {
+  const [report, setReport] = useState(null)
   const [locations, setLocations] = useState([])
-  const [locationsLoading, setLocationsLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState('')
+  const [loadAttempt, setLoadAttempt] = useState(0)
 
   useEffect(() => {
     const controller = new AbortController()
 
-    fetch(`${import.meta.env.BASE_URL}data/locations.json`, {
-      signal: controller.signal,
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Location details could not be loaded.')
-        }
-        return response.json()
-      })
-      .then((data) => {
-        if (!Array.isArray(data)) {
-          throw new Error('Location details are invalid.')
-        }
-        if (!controller.signal.aborted) {
-          setLocations(data)
-          setLocationsLoading(false)
-        }
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) {
-          setLocationsLoading(false)
-        }
-      })
+    async function loadReport() {
+      try {
+        const response = await fetch(
+          `/api/reports/${encodeURIComponent(reportId)}`,
+          { signal: controller.signal },
+        )
 
+        if (response.status === 404) {
+          if (!controller.signal.aborted) {
+            setReport(null)
+            setLoading(false)
+          }
+          return
+        }
+
+        if (!response.ok) {
+          throw new Error('Could not load this report.')
+        }
+        const reportData = await response.json()
+        if (!reportData || reportData.id !== reportId) {
+          throw new Error('The report data is invalid.')
+        }
+
+        const locationResponse = await fetch('/api/locations', {
+          signal: controller.signal,
+        })
+        if (!locationResponse.ok) {
+          throw new Error('Could not load location details.')
+        }
+        const locationData = await locationResponse.json()
+        if (!Array.isArray(locationData)) {
+          throw new Error('The location data is invalid.')
+        }
+
+        if (!controller.signal.aborted) {
+          setReport(reportData)
+          setLocations(locationData)
+          setLoading(false)
+        }
+      } catch (loadError) {
+        if (!controller.signal.aborted) {
+          setError(loadError.message)
+          setLoading(false)
+        }
+      }
+    }
+
+    loadReport()
     return () => controller.abort()
-  }, [])
+  }, [reportId, loadAttempt])
+
+  function retryLoad() {
+    setLoading(true)
+    setError('')
+    setLoadAttempt((previous) => previous + 1)
+  }
 
   if (loading) {
     return (
@@ -205,13 +237,12 @@ function ReportDetailsPage() {
       <main className="report-details">
         <p role="alert">{error}</p>
         <button type="button" onClick={retryLoad}>
-          Retry loading reports
+          Retry loading report
         </button>
       </main>
     )
   }
 
-  const report = reports.find((item) => item.id === reportId)
   if (!report) {
     return (
       <main className="report-details">
@@ -230,10 +261,6 @@ function ReportDetailsPage() {
   )
 
   let locationName = 'Location details unavailable'
-
-  if (locationsLoading) {
-    locationName = 'Loading location details...'
-  }
 
   if (location) {
     locationName = `${location.buildingName} - ${location.locationName}`
@@ -255,9 +282,15 @@ function ReportDetailsPage() {
         report={report}
         locationName={locationName}
         locationHref={locationHref}
+        onUpdate={setReport}
       />
     </main>
   )
+}
+
+function ReportDetailsPage() {
+  const { reportId } = useParams()
+  return <ReportDetailsLoader key={reportId} reportId={reportId} />
 }
 
 export default ReportDetailsPage
