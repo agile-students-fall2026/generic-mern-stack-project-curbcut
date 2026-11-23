@@ -11,6 +11,7 @@ function ReportsProvider({ children }) {
 
   const mountedRef = useRef(false)
   const submittingRef = useRef(false)
+  const reportVersionRef = useRef(0)
   const photoUrlsRef = useRef([])
 
   useEffect(() => {
@@ -31,6 +32,7 @@ function ReportsProvider({ children }) {
     const controller = new AbortController()
 
     async function loadReports() {
+      const versionAtStart = reportVersionRef.current
       try {
         const response = await fetch('/api/reports', {
           signal: controller.signal,
@@ -47,7 +49,9 @@ function ReportsProvider({ children }) {
         }
 
         if (!controller.signal.aborted) {
-          setReports(data)
+          if (reportVersionRef.current === versionAtStart) {
+            setReports(data)
+          }
           setError('')
           setLoading(false)
         }
@@ -140,7 +144,7 @@ function ReportsProvider({ children }) {
         photo,
         status: 'Active',
       }
-
+      reportVersionRef.current += 1
       setReports((previous) => [report, ...previous])
 
       return report
@@ -200,7 +204,7 @@ function ReportsProvider({ children }) {
         createdAt: new Date().toISOString(),
         photo,
       }
-
+      reportVersionRef.current += 1
       setReports((previous) =>
         previous.map((report) => {
           if (report.id === reportId) {
@@ -235,6 +239,7 @@ function ReportsProvider({ children }) {
         loading,
         error,
         retryLoad,
+        refreshReports: retryLoad,
         submitReport,
         submitUpdate,
       }}
