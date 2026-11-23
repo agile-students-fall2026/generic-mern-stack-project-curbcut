@@ -14,9 +14,7 @@ function SupportedBuildings({ getBuildingHref, onBack }) {
 
     async function loadBuildings() {
       try {
-        const response = await fetch(
-          `${import.meta.env.BASE_URL}data/buildings.json`,
-        )
+        const response = await fetch('/api/buildings')
         if (!response.ok) {
           throw new Error('Could not load buildings')
         }
@@ -37,9 +35,7 @@ function SupportedBuildings({ getBuildingHref, onBack }) {
 
     async function loadLocations() {
       try {
-        const response = await fetch(
-          `${import.meta.env.BASE_URL}data/locations.json`,
-        )
+        const response = await fetch('/api/locations')
         if (!response.ok) {
           throw new Error('Could not load locations')
         }
