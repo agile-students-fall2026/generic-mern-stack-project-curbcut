@@ -8,11 +8,12 @@ function LocationSelector({ location, onSelect }) {
   const [error, setError] = useState('')
   const [search, setSearch] = useState('')
   const [buildingId, setBuildingId] = useState('')
+  const [loadAttempt, setLoadAttempt] = useState(0)
 
   useEffect(() => {
     let active = true
 
-    fetch(`${import.meta.env.BASE_URL}data/locations.json`)
+    fetch('/api/locations')
       .then((response) => {
         if (!response.ok) {
           throw new Error('Could not load locations.')
@@ -28,7 +29,7 @@ function LocationSelector({ location, onSelect }) {
       })
       .catch(() => {
         if (active) {
-          setError('Locations could not be loaded. Close and refresh to retry.')
+          setError('Locations could not be loaded.')
           setLoading(false)
         }
       })
@@ -36,7 +37,7 @@ function LocationSelector({ location, onSelect }) {
     return () => {
       active = false
     }
-  }, [])
+  }, [loadAttempt])
 
   const buildings = []
 
@@ -70,6 +71,12 @@ function LocationSelector({ location, onSelect }) {
     setSearch('')
     setBuildingId(location ? location.buildingId : '')
     dialogRef.current.showModal()
+  }
+
+  function retryLocations() {
+    setError('')
+    setLoading(true)
+    setLoadAttempt((attempt) => attempt + 1)
   }
 
   function closeSelector() {
@@ -124,9 +131,18 @@ function LocationSelector({ location, onSelect }) {
         {loading && <p role="status">Loading locations…</p>}
 
         {error && (
-          <p className="reporting__error" role="alert">
-            {error}
-          </p>
+          <>
+            <p className="reporting__error" role="alert">
+              {error}
+            </p>
+            <button
+              type="button"
+              className="reporting__text-button"
+              onClick={retryLocations}
+            >
+              Retry
+            </button>
+          </>
         )}
 
         {!loading && !error && (
