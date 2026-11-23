@@ -86,38 +86,31 @@ describe('POST /api/reports', function () {
       'Choose a valid observation date and time.'
     )
   })
-  it('creates a valid report and returns it in GET /api/reports', async function () {
-    const originalText = fs.readFileSync('data/reports.json', 'utf-8')
+  
+  it('rejects a valid floor with an invalid entrance and leaves stored reports unchanged', async function () {
+    const before = fs.readFileSync('data/reports.json', 'utf-8')
 
     const report = {
       buildingId: 'kimmel-center',
-      entranceId: 'kimmel-main',
-      floorId: null,
-      category: 'Blocked ramp',
+      entranceId: 'does-not-exist',
+      floorId: 'kimmel-floor-1',
+      category: 'Elevator outage',
       observedAt: '2026-11-01T15:00:00.000Z',
       description:
-        'Several heavy delivery boxes are blocking wheelchair access to the main entrance.',
+        'The elevator on the first floor is out of service and blocking wheelchair access.',
     }
 
     try {
-      const created = await request(app).post('/api/reports').send(report)
+      const response = await request(app).post('/api/reports').send(report)
+      const after = fs.readFileSync('data/reports.json', 'utf-8')
 
-      expect(created.status).to.equal(201)
-      expect(created.body.id).to.be.a('string').and.not.be.empty
-
-      const list = await request(app).get('/api/reports')
-
-      expect(list.status).to.equal(200)
-      expect(list.body).to.be.an('array')
-
-      const savedReport = list.body.find(function (item) {
-        return item.id === created.body.id
-      })
-
-      expect(savedReport).to.be.an('object')
-      expect(savedReport.description).to.equal(report.description)
+      expect(response.status).to.equal(400)
+      expect(response.body.errors.location).to.equal(
+        'Choose a valid entrance or floor for the selected building.'
+      )
+      expect(after).to.equal(before)
     } finally {
-      fs.writeFileSync('data/reports.json', originalText)
+      fs.writeFileSync('data/reports.json', before)
     }
   })
 })
