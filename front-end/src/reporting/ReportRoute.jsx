@@ -20,10 +20,9 @@ function ReportLocationLoader({ buildingId, entranceId }) {
 
     async function loadRequestedLocation() {
       try {
-        const response = await fetch(
-          `${import.meta.env.BASE_URL}data/locations.json`,
-          { signal: controller.signal },
-        )
+        const response = await fetch('/api/locations', {
+          signal: controller.signal,
+        })
 
         if (!response.ok) {
           throw new Error('Could not load the requested location.')
