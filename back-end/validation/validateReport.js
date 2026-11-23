@@ -30,6 +30,8 @@ function validateReport(report, locations = []) {
   const buildingId = report?.buildingId
   const entranceId = report?.entranceId
   const floorId = report?.floorId
+  const hasEntrance = entranceId !== null && entranceId !== undefined
+  const hasFloor = floorId !== null && floorId !== undefined
 
   const locationBelongsToBuilding = locations.some(function (location) {
     const matchesEntrance =
@@ -40,7 +42,7 @@ function validateReport(report, locations = []) {
     return location.buildingId === buildingId && (matchesEntrance || matchesFloor)
   })
 
-  if (!locationBelongsToBuilding) {
+  if (hasEntrance === hasFloor || !locationBelongsToBuilding) {
     errors.location = 'Choose a valid entrance or floor for the selected building.'
   }
   

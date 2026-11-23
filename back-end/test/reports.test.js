@@ -86,5 +86,32 @@ describe('POST /api/reports', function () {
       'Choose a valid observation date and time.'
     )
   })
+  
+  it('rejects a valid floor with an invalid entrance and leaves stored reports unchanged', async function () {
+    const before = fs.readFileSync('data/reports.json', 'utf-8')
+
+    const report = {
+      buildingId: 'kimmel-center',
+      entranceId: 'does-not-exist',
+      floorId: 'kimmel-floor-1',
+      category: 'Elevator outage',
+      observedAt: '2026-11-01T15:00:00.000Z',
+      description:
+        'The elevator on the first floor is out of service and blocking wheelchair access.',
+    }
+
+    try {
+      const response = await request(app).post('/api/reports').send(report)
+      const after = fs.readFileSync('data/reports.json', 'utf-8')
+
+      expect(response.status).to.equal(400)
+      expect(response.body.errors.location).to.equal(
+        'Choose a valid entrance or floor for the selected building.'
+      )
+      expect(after).to.equal(before)
+    } finally {
+      fs.writeFileSync('data/reports.json', before)
+    }
+  })
 })
 
