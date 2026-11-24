@@ -18,7 +18,8 @@ router.post('/', function (request, response) {
   if (Object.keys(errors).length > 0) {
     return response.status(400).json({ errors })
   }
-  const { buildingId, entranceId, floorId, category, description, observedAt } = request.body
+  const { buildingId, entranceId, floorId, category, description, observedAt } =
+    request.body
   const now = new Date().toISOString()
 
   const report = {
@@ -27,7 +28,7 @@ router.post('/', function (request, response) {
     entranceId: entranceId ?? null,
     floorId: floorId ?? null,
     category,
-    description,
+    description: description.trim(),
     observedAt,
     createdAt: now,
     updatedAt: now,
