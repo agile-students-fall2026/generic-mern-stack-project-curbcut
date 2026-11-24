@@ -2,12 +2,14 @@ import { useEffect, useRef, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import AddUpdateForm from '../reports/AddUpdateForm'
 import './ReportDetailsPage.css'
+import useReports from '../reports/useReports'
 
 function ReportDetails({ report, locationName, locationHref, onUpdate }) {
   const [updateChoice, setUpdateChoice] = useState(null)
   const triggerRef = useRef(null)
   const [updatePosted, setUpdatePosted] = useState(false)
   const confirmationRef = useRef(null)
+  const { refreshReports } = useReports()
 
   useEffect(() => {
     if (updatePosted) {
@@ -35,6 +37,7 @@ function ReportDetails({ report, locationName, locationHref, onUpdate }) {
 
   function finishUpdate(updatedReport) {
     onUpdate(updatedReport)
+    refreshReports()
     setUpdateChoice(null)
     setUpdatePosted(true)
   }
