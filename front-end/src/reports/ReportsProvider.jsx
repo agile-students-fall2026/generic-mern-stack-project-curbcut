@@ -84,9 +84,10 @@ function ReportsProvider({ children }) {
     }
 
     const validationErrors = validateReport(values)
-
     if (Object.keys(validationErrors).length > 0) {
-      throw new Error('Correct the report fields before submitting.')
+      const validationError = new Error('Check the highlighted fields.')
+      validationError.fieldErrors = validationErrors
+      throw validationError
     }
 
     if (
@@ -107,45 +108,54 @@ function ReportsProvider({ children }) {
     submittingRef.current = true
 
     try {
-      await new Promise((resolve) => setTimeout(resolve, 700))
+      if (import.meta.env.DEV && forceFailure) {
+        throw new Error('Simulated submission failure. Please try again.')
+      }
+
+      const fields = {
+        buildingId,
+        [locationType === 'entrance' ? 'entranceId' : 'floorId']: locationId,
+        category,
+        description,
+        observedAt,
+      }
+
+      const options = { method: 'POST' }
+
+      if (photoFile) {
+        const body = new FormData()
+        for (const [name, value] of Object.entries(fields)) {
+          body.append(name, value)
+        }
+        body.append('photo', photoFile)
+        options.body = body
+      } else {
+        options.headers = { 'Content-Type': 'application/json' }
+        options.body = JSON.stringify(fields)
+      }
+
+      const response = await fetch('/api/reports', options)
+
+      if (response.status !== 201) {
+        const data = await response.json().catch(() => null)
+        const submitError = new Error('Could not submit the report. Please try again.')
+        if (data?.errors) {
+          submitError.fieldErrors = data.errors
+        }
+        throw submitError
+      }
+
+      const report = await response.json()
 
       if (!mountedRef.current) {
         throw new Error('The reporting session has ended.')
       }
 
-      if (import.meta.env.DEV && forceFailure) {
-        throw new Error('Simulated submission failure. Please try again.')
-      }
-
-      const id = crypto.randomUUID()
-      const createdAt = new Date().toISOString()
-      let photo = null
-
-      if (photoFile) {
-        const url = URL.createObjectURL(photoFile)
-        photoUrlsRef.current.push(url)
-
-        photo = {
-          url,
-          alt: 'Submitted barrier photo',
-        }
-      }
-
-      const report = {
-        id,
-        buildingId,
-        entranceId: locationType === 'entrance' ? locationId : null,
-        floorId: locationType === 'floor' ? locationId : null,
-        category,
-        description,
-        observedAt,
-        createdAt,
-        updatedAt: createdAt,
-        photo,
-        status: 'Active',
-      }
       reportVersionRef.current += 1
-      setReports((previous) => [report, ...previous])
+      setReports((previous) => [
+        report,
+        ...previous.filter((item) => item.id !== report.id),
+      ])
 
       return report
     } finally {

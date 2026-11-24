@@ -26,8 +26,7 @@ function ReportConfirmation({ report, location, onNewReport }) {
       </h1>
 
       <p className="report-confirmation__message">
-        Thanks! Your report for {buildingName} has been added to this prototype
-        session.
+        Thanks! Your report for {buildingName} has been submitted.
       </p>
 
       <dl className="report-confirmation__summary">
@@ -85,10 +84,6 @@ function ReportConfirmation({ report, location, onNewReport }) {
         </button>
       </div>
 
-      <p className="reporting__hint report-confirmation__note">
-        Refreshing reloads the sample reports and removes new submissions.
-        Reports are not shared between users during this prototype.
-      </p>
     </main>
   )
 }
