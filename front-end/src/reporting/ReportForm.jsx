@@ -58,7 +58,11 @@ function ReportForm({ initialLocation = null }) {
       const report = await submitReport(values, { forceFailure })
       setSubmittedReport(report)
     } catch (submitError) {
-      setSubmissionError(submitError.message)
+      if (submitError.fieldErrors) {
+        setErrors(submitError.fieldErrors)
+      } else {
+        setSubmissionError(submitError.message)
+      }
       submissionLock.current = false
     } finally {
       setIsSubmitting(false)
@@ -119,6 +123,11 @@ function ReportForm({ initialLocation = null }) {
             <div className="reporting__error-summary" role="alert">
               {errorCount} {errorCount === 1 ? 'field needs' : 'fields need'}{' '}
               attention. Check the messages below.
+              <ul>
+                {Object.entries(errors).map(([field, message]) => (
+                  <li key={field}>{message}</li>
+                ))}
+              </ul>
             </div>
           )}
 
@@ -260,6 +269,7 @@ function ReportForm({ initialLocation = null }) {
             photo={photo}
             onChange={(value) => changeField(setPhoto, value)}
           />
+          {errors.photo && <p className="reporting__error">{errors.photo}</p>}
 
           {import.meta.env.DEV && (
             <div className="reporting__field">
