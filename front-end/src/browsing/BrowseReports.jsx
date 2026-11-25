@@ -18,6 +18,7 @@ function BrowseReports() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [loadAttempt, setLoadAttempt] = useState(0)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [total, setTotal] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [page, setPage] = useState(1)
@@ -70,7 +71,9 @@ function BrowseReports() {
     const controller = new AbortController()
 
     async function loadReports() {
-      setLoading(true)
+      // The first page replaces the list; later pages append to it.
+      setLoading(page === 1)
+      setLoadingMore(page > 1)
       setError('')
 
       const query = new URLSearchParams({
@@ -100,16 +103,25 @@ function BrowseReports() {
         }
 
         if (!controller.signal.aborted) {
-          setReports(data.reports)
+          setReports((previous) => {
+            if (page === 1) {
+              return data.reports
+            }
+
+            const ids = new Set(previous.map((report) => report.id))
+            return [...previous, ...data.reports.filter((report) => !ids.has(report.id))]
+          })
           setCategories(Array.isArray(data.categories) ? data.categories : [])
           setTotal(data.pagination?.total || 0)
           setTotalPages(data.pagination?.totalPages || 0)
           setLoading(false)
+          setLoadingMore(false)
         }
       } catch (loadError) {
         if (!controller.signal.aborted) {
           setError(loadError.message)
           setLoading(false)
+          setLoadingMore(false)
         }
       }
     }
@@ -195,6 +207,7 @@ function BrowseReports() {
             value={search}
             onChange={(event) => {
               setSearch(event.target.value)
+              setReports([])
               setPage(1)
             }}
           />
@@ -222,6 +235,7 @@ function BrowseReports() {
             aria-pressed={status === option}
             onClick={() => {
               setStatus(option)
+              setReports([])
               setPage(1)
             }}
           >
@@ -377,28 +391,15 @@ function BrowseReports() {
               ))}
             </section>
           )}
-          {totalPages > 1 && (
-            <nav className="browse-reports__pagination" aria-label="Pagination">
-              <button
-                type="button"
-                className="browse-reports__page-button"
-                onClick={() => setPage((current) => Math.max(current - 1, 1))}
-                disabled={page === 1}
-              >
-                Previous
-              </button>
-              <span className="browse-reports__page-info">
-                Page {page} of {totalPages}
-              </span>
-              <button
-                type="button"
-                className="browse-reports__page-button"
-                onClick={() => setPage((current) => Math.min(current + 1, totalPages))}
-                disabled={page === totalPages}
-              >
-                Next
-              </button>
-            </nav>
+          {page < totalPages && (
+            <button
+              type="button"
+              className="browse-reports__load-more"
+              onClick={() => setPage((current) => current + 1)}
+              disabled={loadingMore}
+            >
+              {loadingMore ? 'Loading more...' : 'Load more reports'}
+            </button>
           )}
         </>
       ) : null}
