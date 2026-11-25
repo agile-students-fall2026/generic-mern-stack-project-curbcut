@@ -173,4 +173,83 @@ describe('report routes', function () {
       }
     })
   })
+
+
+  it('rejects a text file uploaded as a PNG', async function () {
+    const response = await request(app)
+      .post('/api/reports')
+      .field('buildingId', 'kimmel-center')
+      .field('entranceId', 'kimmel-main')
+      .field('category', 'Blocked ramp')
+      .field('description', 'The main entrance ramp is blocked by several large boxes.')
+      .field('observedAt', '2026-11-01T15:00:00.000Z')
+      .attach('photo', Buffer.from('plain text'), {
+        filename: 'photo.png',
+        contentType: 'image/png',
+      })
+
+    expect(response.status).to.equal(400)
+    expect(response.body.errors.photo).to.equal('Choose a valid JPEG or PNG photo.')
+  })
+
+  it('rejects a photo larger than 5 MB', async function () {
+    const response = await request(app)
+      .post('/api/reports')
+      .attach('photo', Buffer.alloc(5_000_001), {
+        filename: 'large.png',
+        contentType: 'image/png',
+      })
+
+    expect(response.status).to.equal(400)
+    expect(response.body.errors.photo).to.equal('Choose a photo no larger than 5 MB.')
+  })
+  it('saves a valid PNG with the report', async function () {
+    const png = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aXZkAAAAASUVORK5CYII=',
+      'base64'
+    )
+
+    const created = await request(app)
+      .post('/api/reports')
+      .field('buildingId', 'kimmel-center')
+      .field('entranceId', 'kimmel-main')
+      .field('category', 'Blocked ramp')
+      .field('description', 'The main entrance ramp is blocked by several large boxes.')
+      .field('observedAt', '2026-11-01T15:00:00.000Z')
+      .attach('photo', png, { filename: 'ramp.png', contentType: 'image/png' })
+
+    expect(created.status).to.equal(201)
+    expect(created.body.photo).to.exist
+
+    const list = await request(app).get('/api/reports')
+    const saved = list.body.find((report) => report.id === created.body.id)
+    expect(saved.photo).to.deep.equal(created.body.photo)
+  })
+  it('leaves no report or photo when the report is invalid', async function () {
+    const photoDir = 'data/report-photos'
+    const listPhotos = () =>
+      fs.existsSync(photoDir) ? fs.readdirSync(photoDir).sort() : []
+
+    const reportsBefore = fs.readFileSync('data/reports.json', 'utf8')
+    const photosBefore = listPhotos()
+    const png = Buffer.from(
+      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aXZkAAAAASUVORK5CYII=',
+      'base64'
+    )
+
+    const response = await request(app)
+      .post('/api/reports')
+      .field('buildingId', 'kimmel-center')
+      .field('entranceId', 'kimmel-main')
+      .field('category', 'Blocked ramp')
+      .field('description', 'Too short')
+      .field('observedAt', '2026-11-01T15:00:00.000Z')
+      .attach('photo', png, { filename: 'ramp.png', contentType: 'image/png' })
+
+    expect(response.status).to.equal(400)
+    expect(response.body.errors).to.have.property('description')
+    expect(response.body.errors).to.not.have.property('photo')
+    expect(fs.readFileSync('data/reports.json', 'utf8')).to.equal(reportsBefore)
+    expect(listPhotos()).to.deep.equal(photosBefore)
+  })
 })
