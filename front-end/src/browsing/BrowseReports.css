@@ -173,6 +173,38 @@
   cursor: pointer;
 }
 
+.browse-reports__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.browse-reports__page-button {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--app-border);
+  border-radius: 6px;
+  color: var(--app-text);
+  background: var(--app-background);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.browse-reports__page-button:disabled {
+  color: var(--app-muted);
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.browse-reports__page-info {
+  color: var(--app-muted);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
 @media (max-width: 480px) {
   .browse-reports__controls {
     grid-template-columns: 1fr;

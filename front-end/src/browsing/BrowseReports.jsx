@@ -19,6 +19,7 @@ function BrowseReports() {
   const [error, setError] = useState('')
   const [loadAttempt, setLoadAttempt] = useState(0)
   const [total, setTotal] = useState(0)
+  const [totalPages, setTotalPages] = useState(0)
   const [page, setPage] = useState(1)
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState('All')
@@ -99,11 +100,10 @@ function BrowseReports() {
         }
 
         if (!controller.signal.aborted) {
-          setReports((previous) =>
-            page === 1 ? data.reports : [...previous, ...data.reports],
-          )
+          setReports(data.reports)
           setCategories(Array.isArray(data.categories) ? data.categories : [])
           setTotal(data.pagination?.total || 0)
+          setTotalPages(data.pagination?.totalPages || 0)
           setLoading(false)
         }
       } catch (loadError) {
@@ -377,14 +377,28 @@ function BrowseReports() {
               ))}
             </section>
           )}
-          {reports.length < total && (
-            <button
-              className="browse-reports__load-more"
-              type="button"
-              onClick={() => setPage((current) => current + 1)}
-            >
-              Load more reports
-            </button>
+          {totalPages > 1 && (
+            <nav className="browse-reports__pagination" aria-label="Pagination">
+              <button
+                type="button"
+                className="browse-reports__page-button"
+                onClick={() => setPage((current) => Math.max(current - 1, 1))}
+                disabled={page === 1}
+              >
+                Previous
+              </button>
+              <span className="browse-reports__page-info">
+                Page {page} of {totalPages}
+              </span>
+              <button
+                type="button"
+                className="browse-reports__page-button"
+                onClick={() => setPage((current) => Math.min(current + 1, totalPages))}
+                disabled={page === totalPages}
+              >
+                Next
+              </button>
+            </nav>
           )}
         </>
       ) : null}
