@@ -16,6 +16,7 @@ function BrowseReports() {
   const [reports, setReports] = useState([])
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
+  const [hasLoaded, setHasLoaded] = useState(false)
   const [error, setError] = useState('')
   const [loadAttempt, setLoadAttempt] = useState(0)
   const [loadingMore, setLoadingMore] = useState(false)
@@ -71,8 +72,8 @@ function BrowseReports() {
     const controller = new AbortController()
 
     async function loadReports() {
-      // The first page replaces the list; later pages append to it.
-      setLoading(page === 1)
+      // The first load shows a loading message; later page-one refreshes keep cards visible.
+      setLoading(page === 1 && !hasLoaded)
       setLoadingMore(page > 1)
       setError('')
 
@@ -103,13 +104,17 @@ function BrowseReports() {
         }
 
         if (!controller.signal.aborted) {
+          setHasLoaded(true)
           setReports((previous) => {
             if (page === 1) {
               return data.reports
             }
 
             const ids = new Set(previous.map((report) => report.id))
-            return [...previous, ...data.reports.filter((report) => !ids.has(report.id))]
+            return [
+              ...previous,
+              ...data.reports.filter((report) => !ids.has(report.id)),
+            ]
           })
           setCategories(Array.isArray(data.categories) ? data.categories : [])
           setTotal(data.pagination?.total || 0)
@@ -129,7 +134,7 @@ function BrowseReports() {
     loadReports()
 
     return () => controller.abort()
-  }, [buildingId, filters, loadAttempt, page, search, status])
+  }, [buildingId, filters, hasLoaded, loadAttempt, page, search, status])
 
   const buildingName = locations.find(
     (location) => location.buildingId === buildingId,
@@ -142,9 +147,17 @@ function BrowseReports() {
 
   function applyFilters(event) {
     event.preventDefault()
-    setFilters(draftFilters)
-    setReports([])
-    setPage(1)
+
+    const filtersChanged =
+      draftFilters.category !== filters.category ||
+      draftFilters.observationPeriod !== filters.observationPeriod ||
+      draftFilters.sort !== filters.sort
+
+    if (filtersChanged) {
+      setFilters(draftFilters)
+      setPage(1)
+    }
+
     filtersDialog.current?.close()
   }
 
@@ -207,7 +220,6 @@ function BrowseReports() {
             value={search}
             onChange={(event) => {
               setSearch(event.target.value)
-              setReports([])
               setPage(1)
             }}
           />
@@ -235,7 +247,6 @@ function BrowseReports() {
             aria-pressed={status === option}
             onClick={() => {
               setStatus(option)
-              setReports([])
               setPage(1)
             }}
           >
@@ -321,9 +332,7 @@ function BrowseReports() {
             >
               Cancel
             </button>
-            <button type="submit">
-              Apply filters
-            </button>
+            <button type="submit">Apply filters</button>
           </div>
         </form>
       </dialog>
@@ -351,8 +360,7 @@ function BrowseReports() {
       ) : error === '' ? (
         <>
           <p className="browse-reports__count" aria-live="polite">
-            {total}{' '}
-            {total === 1 ? 'matching report' : 'matching reports'}
+            {total} {total === 1 ? 'matching report' : 'matching reports'}
             {' · Sorted by '}
             {filters.sort.startsWith('updated')
               ? 'last updated'
