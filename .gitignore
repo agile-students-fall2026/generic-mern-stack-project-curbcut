@@ -127,3 +127,5 @@ typings/
 ## Jekyll artifacts
 **/.jekyll-cache
 **/_site/
+# Uploaded report photos
+back-end/data/report-photos/
