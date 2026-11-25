@@ -138,7 +138,9 @@ function ReportsProvider({ children }) {
 
       if (response.status !== 201) {
         const data = await response.json().catch(() => null)
-        const submitError = new Error('Could not submit the report. Please try again.')
+        const submitError = new Error(
+          'Could not submit the report. Please try again.',
+        )
         if (data?.errors) {
           submitError.fieldErrors = data.errors
         }

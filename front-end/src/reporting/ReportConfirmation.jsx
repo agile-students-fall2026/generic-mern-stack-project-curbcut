@@ -83,7 +83,6 @@ function ReportConfirmation({ report, location, onNewReport }) {
           Start another report
         </button>
       </div>
-
     </main>
   )
 }

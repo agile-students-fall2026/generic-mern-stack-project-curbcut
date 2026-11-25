@@ -129,7 +129,6 @@ function ReportForm({ initialLocation = null }) {
                 ))}
               </ul>
             </div>
-            
           )}
 
           <div
@@ -270,9 +269,7 @@ function ReportForm({ initialLocation = null }) {
             photo={photo}
             onChange={(value) => changeField(setPhoto, value)}
           />
-          {errors.photo && (
-            <p className="reporting__error">{errors.photo}</p>
-          )}
+          {errors.photo && <p className="reporting__error">{errors.photo}</p>}
 
           {import.meta.env.DEV && (
             <div className="reporting__field">
