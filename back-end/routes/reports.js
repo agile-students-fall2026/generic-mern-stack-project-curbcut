@@ -43,7 +43,10 @@ router.post('/', handlePhotoUpload, function (request, response) {
   } else if (photo && photo.size === 0) {
     errors.photo = 'Choose a photo that is not empty.'
   } else if (photo) {
-    const signature = photo.mimetype === 'image/png' ? Buffer.from('89504e470d0a1a0a', 'hex'): Buffer.from('ffd8ff', 'hex')
+    const signature =
+      photo.mimetype === 'image/png'
+        ? Buffer.from('89504e470d0a1a0a', 'hex')
+        : Buffer.from('ffd8ff', 'hex')
     if (!photo.buffer.subarray(0, signature.length).equals(signature)) {
       errors.photo = 'Choose a valid JPEG or PNG photo.'
     }
@@ -68,7 +71,12 @@ router.post('/', handlePhotoUpload, function (request, response) {
     observedAt,
     createdAt: now,
     updatedAt: now,
-    photo: photoName ? { url: `/api/reports/photos/${photoName}`, alt: 'Submitted barrier photo' } : null,
+    photo: photoName
+      ? {
+          url: `/api/reports/photos/${photoName}`,
+          alt: 'Submitted barrier photo',
+        }
+      : null,
     status: 'Active',
   }
 

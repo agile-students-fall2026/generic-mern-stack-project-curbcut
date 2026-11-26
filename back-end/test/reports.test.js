@@ -174,14 +174,16 @@ describe('report routes', function () {
     })
   })
 
-
   it('rejects a text file uploaded as a PNG', async function () {
     const response = await request(app)
       .post('/api/reports')
       .field('buildingId', 'kimmel-center')
       .field('entranceId', 'kimmel-main')
       .field('category', 'Blocked ramp')
-      .field('description', 'The main entrance ramp is blocked by several large boxes.')
+      .field(
+        'description',
+        'The main entrance ramp is blocked by several large boxes.',
+      )
       .field('observedAt', '2026-11-01T15:00:00.000Z')
       .attach('photo', Buffer.from('plain text'), {
         filename: 'photo.png',
@@ -189,7 +191,9 @@ describe('report routes', function () {
       })
 
     expect(response.status).to.equal(400)
-    expect(response.body.errors.photo).to.equal('Choose a valid JPEG or PNG photo.')
+    expect(response.body.errors.photo).to.equal(
+      'Choose a valid JPEG or PNG photo.',
+    )
   })
 
   it('rejects a photo larger than 5 MB', async function () {
@@ -201,12 +205,14 @@ describe('report routes', function () {
       })
 
     expect(response.status).to.equal(400)
-    expect(response.body.errors.photo).to.equal('Choose a photo no larger than 5 MB.')
+    expect(response.body.errors.photo).to.equal(
+      'Choose a photo no larger than 5 MB.',
+    )
   })
   it('saves a valid PNG with the report', async function () {
     const png = Buffer.from(
       'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aXZkAAAAASUVORK5CYII=',
-      'base64'
+      'base64',
     )
 
     const created = await request(app)
@@ -214,7 +220,10 @@ describe('report routes', function () {
       .field('buildingId', 'kimmel-center')
       .field('entranceId', 'kimmel-main')
       .field('category', 'Blocked ramp')
-      .field('description', 'The main entrance ramp is blocked by several large boxes.')
+      .field(
+        'description',
+        'The main entrance ramp is blocked by several large boxes.',
+      )
       .field('observedAt', '2026-11-01T15:00:00.000Z')
       .attach('photo', png, { filename: 'ramp.png', contentType: 'image/png' })
 
@@ -234,7 +243,7 @@ describe('report routes', function () {
     const photosBefore = listPhotos()
     const png = Buffer.from(
       'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aXZkAAAAASUVORK5CYII=',
-      'base64'
+      'base64',
     )
 
     const response = await request(app)
