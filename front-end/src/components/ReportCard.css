@@ -77,3 +77,7 @@
   object-fit: cover;
   background: var(--app-surface);
 }
+
+.report-card__photo[hidden] {
+  display: none;
+}
