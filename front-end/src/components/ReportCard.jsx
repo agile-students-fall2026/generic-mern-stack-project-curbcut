@@ -28,6 +28,17 @@ function ReportCard({ report, locations }) {
 
   return (
     <Link to={`/reports/${report.id}`} className="report-card">
+      {report.photo?.url && (
+        <img
+          className="report-card__photo"
+          src={report.photo.url}
+          alt={report.photo.alt || 'Photo attached to this report'}
+          onError={(event) => {
+            event.currentTarget.hidden = true
+          }}
+        />
+      )}
+
       <div className="report-card__tags">
         <span className="report-card__category">{report.category}</span>
         <span className={statusClass}>{report.status}</span>

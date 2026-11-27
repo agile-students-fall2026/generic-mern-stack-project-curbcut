@@ -51,7 +51,10 @@ describe('report routes', function () {
         observedAt: '2026-11-01T15:00:00.000Z',
         createdAt: '2026-11-01T15:05:00.000Z',
         updatedAt: '2026-11-01T15:05:00.000Z',
-        photo: null,
+        photo: {
+          url: 'https://picsum.photos/id/1076/800/450',
+          alt: 'Placeholder image for the blocked ramp report',
+        },
         status: 'Active',
       })
     })
